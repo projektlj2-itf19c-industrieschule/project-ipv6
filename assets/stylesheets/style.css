@@ -1,0 +1,11 @@
+:root {
+  --red: #dc3545;
+}
+
+.hint {
+  border: 2px solid var(--red);
+  border-radius: 3px;
+  color: var(--red);
+  padding: 0 3px;
+  margin: 0 3px;
+}
