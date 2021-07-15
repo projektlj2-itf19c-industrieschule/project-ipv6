@@ -17,7 +17,7 @@ const generateHtmlFromString = s => {
  const insertFFFEInTheMiddleOfMacAddress = macAddress => {
   let macAddressArray = macAddress.split(':');
   let macAddressWithFFFE = '';
-  let FEFE = 'FE:FE:';
+  let FEFE = 'FF:FE:';
 
   for (let i = 0; i < 3; i++)
   macAddressWithFFFE += `${macAddressArray[i]}:`;
@@ -84,7 +84,12 @@ const invert2ndBitOfMacAddress = macAddress => {
   }
 }
 
-const addEUI64Identifier = macAddress => {
+/**
+ * 
+ * @param {*} macAddress 
+ * @returns 
+ */
+const assemblePrefixAndEUI64Identifier = macAddress => {
   let EUI64Identifier = 'FE80:0000:0000:0000';
   
   let macAddressWithoutSeparators = macAddress.replaceAll(':', '');
@@ -133,7 +138,71 @@ const macAddressValid = macAddress => {
   if (macAddress.length < 12 || macAddress.length > 17)
     valid = false;
 
+  if (!macAddress.match(/^[0-9a-fA-F]{1,2}([\.:-])(?:[0-9a-fA-F]{1,2}\1){4}[0-9a-fA-F]{1,2}$/))
+    valid = false;
+
   return valid;
+}
+
+/**
+ * Checks if a IPv6-Address is valid
+ * @param {String} ipv6Adress The Source IPv6-Address
+ * @returns {Boolean} true if the IPv6-Address is valid, false otherwise
+ */
+const ipv6AdressValid = ipAddress => {
+  let valid = true;
+  let formattedIpAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
+  let ipAddressSplitted = formattedIpAddress.split(':');
+
+  if (formattedIpAddress.length < 12 || formattedIpAddress.length > 14)
+    valid = false;
+
+  if (!formattedIpAddress.match(/^([0-9a-fA-F]{4}:){2}([0-9a-fA-F]{4})$/))
+    valid = false;
+
+  // Fill to complete ipv6 address
+  if (ipAddressSplitted.length < 8) {
+    for (let i = ipAddressSplitted.length; i < 8; i++)
+      ipAddressSplitted.push('0000');
+  }
+
+  // Fill blocks with leading zeros if necessary
+  formattedIpAddress = '';
+  ipAddressSplitted.forEach((block, index) => {
+    if (block.length < 4)
+      ipAddressSplitted[index] = block.padStart(4, '0');
+  });
+
+  // Generate a full ipv6 addess
+  formattedIpAddress = '';
+  ipAddressSplitted.forEach((block, index) => formattedIpAddress += `${block}:`);
+  formattedIpAddress = formattedIpAddress.substring(0, formattedIpAddress.length - 1);
+
+  ipAddressBinary = [];
+  ipAddressSplitted.forEach((block, index) => {
+    let temp = [];
+    block.match(/.{1}/g).forEach((hexNumber, idx) => temp.push(hexToDual(hexNumber)));
+    ipAddressBinary.push(temp);
+  });
+
+  return {
+    valid: valid,
+    ipAddressBinary: ipAddressBinary
+  };
+}
+
+/**
+ * Checks if a number is valid
+ * @param {String} number The value to check
+ * @return {Boolean} True if the number is a Number, false otherwise
+ */
+const numberValid = number => {
+  let parsed = parseInt(number);
+
+  return {
+    valid: !isNaN(parsed),
+    number: parsed
+  };
 }
 
 /**
@@ -152,4 +221,12 @@ const hexToDual = hexNumber => {
  */
 const dualToHex = dualNumber => {
   return parseInt(dualNumber, 2).toString(16).toUpperCase();
+}
+
+const dualToDecimal = dual => {
+  return parseInt(dual, 2).toString();
+}
+
+const decimalToDual = decimal => {
+  return (parseInt(decimal) >>> 0).toString(2);
 }

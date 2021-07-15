@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const btnGenerateMacAddress = document.getElementById('btn-generate-mac-address');
-
   // UI-Elements for the first step of solving
   const stepOneMacAddress                     = document.getElementById('step-one-mac-address');
   const stepOneMacAddressWithFFEE             = document.getElementById('step-one-mac-address-with-ffee');
@@ -18,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepThreeIpv6Address                  = document.getElementById('step-three-ipv6-address');
 
   // Other UI-Elements
+  const btnGenerateMacAddress                 = document.getElementById('btn-generate-mac-address');
   const textFieldMacAddress                   = document.getElementById('mac-address');
   const wrapperSolution                       = document.getElementById('wrapper-solution');
   const hiddenFieldIPv6Address                = document.getElementById('hidden-field-ipv6-address');
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let macAddress                              = textFieldMacAddress.value.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
     let macAddressWithFFFEResult                = insertFFFEInTheMiddleOfMacAddress(macAddress);
     let macAddressWith2ndBitInvertedHtmlResult  = invert2ndBitOfMacAddress(macAddressWithFFFEResult.macAddressWithFFEE); 
-    let ipv6AddressResult                       = addEUI64Identifier(macAddressWith2ndBitInvertedHtmlResult.macAddressWith2ndBitInverted);
+    let ipv6AddressResult                       = assemblePrefixAndEUI64Identifier(macAddressWith2ndBitInvertedHtmlResult.macAddressWith2ndBitInverted);
     
     if (macAddressValid(macAddress)) {
       textFieldMacAddress.classList.add('is-valid');
@@ -51,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       textFieldMacAddress.classList.add('is-invalid');
       textFieldMacAddress.classList.remove('is-valid');
+      wrapperSolution.classList.add('d-none');
     }
   }
 

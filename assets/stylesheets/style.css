@@ -9,3 +9,14 @@
   padding: 0 3px;
   margin: 0 3px;
 }
+
+/* Hide arrows of input[type="number"] */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
