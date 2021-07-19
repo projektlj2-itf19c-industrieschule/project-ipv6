@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
           relevantBitsCurrentSubnetBinary: ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex),
           relevantBitsCurrentSubnetHexadecimal: dualToHex(ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex)),
           fullIpv6AddressBinary: formatBinaryIpAddress(ipAddressValidation.ipAddressBinary),
-          fullIpv6AddressHexadecimal: ipAddressValidation.ipAddressHex
+          fullIpv6AddressHexadecimal: `${ipAddressValidation.ipAddressHex}/${subnet + necessaryBits}`
         })
 
         detailedSolution.forEach((elem, index) => {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
               elem.fullIpv6AddressHexadecimal
             );
           } else {
-            wrapperDetailedSolution.innerHTML += generateFirstSubnetResult(ipAddressValidation.ipAddressHex)
+            wrapperDetailedSolution.innerHTML += generateFirstSubnetResult(detailedSolution[0].fullIpv6AddressHexadecimal)
           }
         });
 
