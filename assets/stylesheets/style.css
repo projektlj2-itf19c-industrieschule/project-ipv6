@@ -10,6 +10,10 @@
   margin: 0 3px;
 }
 
+.hint-decent {
+  color: var(--red);
+}
+
 /* Hide arrows of input[type="number"] */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

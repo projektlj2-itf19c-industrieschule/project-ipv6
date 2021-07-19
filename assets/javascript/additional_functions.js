@@ -145,12 +145,13 @@ const macAddressValid = macAddress => {
 /**
  * Checks if a IPv6-Address is valid
  * @param {String} ipv6Adress The Source IPv6-Address
- * @returns {Boolean} true if the IPv6-Address is valid, false otherwise
+ * @returns {Object}
  */
 const ipv6AdressValid = ipAddress => {
   let valid = true;
   let formattedIpAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
   let ipAddressSplitted = formattedIpAddress.split(':');
+  let ipAddressHex = '';
 
   // Validating length
   if (formattedIpAddress.length < 12 || formattedIpAddress.length > 14)
@@ -171,10 +172,12 @@ const ipv6AdressValid = ipAddress => {
 
   let ipAddressBinary = '';
   ipAddressSplitted.forEach((block, _) => ipAddressBinary += hexToBinary(block, 16));
+  ipAddressSplitted.forEach((block, _) => ipAddressHex += `${block}:`);
 
   return {
     valid: valid,
-    ipAddressBinary: ipAddressBinary
+    ipAddressBinary: ipAddressBinary,
+    ipAddressHex: ipAddressHex.substring(0, ipAddressHex.length - 1)
   };
 }
 
@@ -250,4 +253,134 @@ const binaryIpArrayToBinary = binaryIpArray => {
   });
 
   return binaryIp;
+}
+
+/**
+ * This function generates the result table of a subnet
+ * 
+ * @param {String} relevantBitsPreviousSubnetBinary The relevant bits of the previous subnet in binary format
+ * @param {String} relevantBitsPreviousSubnetHexadecimal The relevant bits of the previous subnet in hexadecimal format
+ * @param {String} relevantBitsCurrentSubnetBinary The relevant bits of the current subnet in binary format
+ * @param {String} relevantBitsCurrentSubnetHexadecimal The relevant bits of the current subnet in hexadecimal format
+ * @param {String} fullIpv6AddressBinary The full generated IPv6 Address in binary format
+ * @param {String} fullIpv6AddressHexadecimal  The full generated IPv6 Address in hexadecimal format
+ */
+const generateDetailedResultTableForSubnet = (
+  nthItem,
+  relevantBitsPreviousSubnetBinary,
+  relevantBitsPreviousSubnetHexadecimal,
+  relevantBitsCurrentSubnetBinary,
+  relevantBitsCurrentSubnetHexadecimal,
+  fullIpv6AddressBinary,
+  fullIpv6AddressHexadecimal,
+  ) => {
+  return `
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading-detailed-solution-${nthItem}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#detailed-solution-${nthItem}" aria-expanded="false" aria-controls="detailed-sulution-${nthItem}">
+        Subnetz ${nthItem}
+      </button>
+    </h2>
+    <div id="detailed-solution-${nthItem}" class="accordion-collapse collapse" aria-labelledby="heading-detailed-solution-${nthItem}" data-bs-parent="#wrapper-detailed-solution">
+      <div class="accordion-body">
+        <div class="table-fluid">
+          <table class="table mt-4">
+            <tr>
+              <td class="fw-bold">Relevante Bits des vorherigen Subnetzes:</td>
+              <td>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span>[${relevantBitsPreviousSubnetBinary}]<sub>2</sub></span>
+                  <i class="fas fa-arrow-right"></i>
+                  <span>[${relevantBitsPreviousSubnetHexadecimal}]<sub>16</sub></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Relevante Bits des aktuellen Subnetzes (hochgezählt):</td>
+              <td>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span>[${relevantBitsCurrentSubnetBinary}]<sub>2</sub></span>
+                  <i class="fas fa-arrow-right"></i>
+                  <span>[${relevantBitsCurrentSubnetHexadecimal}]<sub>16</sub></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Zusammengesetzte IPv6-Adresse (Binär)</td>
+              <td>${fullIpv6AddressBinary}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Zusammengesetzte IPv6-Adresse (Hexadezimal)</td>
+              <td>
+                ${fullIpv6AddressHexadecimal}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  `
+}
+
+/**
+ * This function generates the result table of a subnet
+ * 
+ * @param {String} prefix 
+ */
+ const generateFirstSubnetResult = ipAddress => {
+  return `
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading-detailed-solution-1">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#detailed-solution-1" aria-expanded="false" aria-controls="detailed-sulution-1">
+        Subnetz 1
+      </button>
+    </h2>
+    <div id="detailed-solution-1" class="accordion-collapse collapse" aria-labelledby="heading-detailed-solution-1}" data-bs-parent="#wrapper-detailed-solution">
+      <div class="accordion-body">
+        <div class="bs-callout bs-callout-info">
+          Um das erste Subnetz zu bilden, muss das Ausgangsprefix lediglich mit Nullen aufgefüllt werden
+        </div>
+        <table class="table">
+          <tr>
+            <td class="fw-bold">IPv6-Adresse</td>
+            <td>${ipAddress}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  `
+}
+
+const formatBinaryIpAddress = ipAddress => {
+  let countBlock = 0;
+  let countChar = 0;
+  let formatted = '';
+
+  ipAddress.split('').forEach((elem, _) => {
+    if (elem == '0' || elem == '1') {
+      countBlock++;
+      countChar++;
+    }
+
+    formatted += elem;
+
+    if (countChar == 4) {
+      formatted += ' ';
+      countChar = 0;
+    }
+
+    if (countBlock == 16) {
+      formatted += ' <span class="fw-bold">:</span><br> '
+      countBlock = 0;
+    }
+
+  });
+
+  return formatted;
+}
+
+const fillIPv6Addess = rawIPv6Address => {
+  fillIPv6Addess
 }

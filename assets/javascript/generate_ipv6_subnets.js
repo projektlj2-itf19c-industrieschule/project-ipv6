@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const formFieldAmountSubnets  = document.getElementById('amount-subnets');
   const btnGenerateSubnets      = document.getElementById('btn-generate-subnets');
 
+  const accordionButtonSolution = document.getElementById('accordion-button-solution');
+  const accordionButtonDetailedSolution = document.getElementById('accordion-button-detailed-solution');
+
+  const wrapperDetailedSolution = document.getElementById('wrapper-detailed-solution');
+
   const generateSubnets = variant => {
     let ipAdress = formFieldIpAddress.value;
     let amountSubnets = formFieldAmountSubnets.value;
@@ -19,8 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (amountSubnetsValidation.valid) {
         amountSubnets = amountSubnetsValidation.number;
+        
         formFieldAmountSubnets.classList.add('is-valid');
         formFieldAmountSubnets.classList.remove('is-invalid');
+        accordionButtonSolution.disabled = false;
+        accordionButtonDetailedSolution.disabled = false;
 
         // Calculating the necessary bits by calculating the logarithm of amountSubnets to the base of 2
         let necessaryBits = Math.ceil(Math.log(amountSubnets) / Math.log(2));
@@ -29,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let generatedSubnets = { binary: [], hexadecimal: [] };
         
         // Create a copy of the binary ipv4 address
-        let copy = ipAddressValidation.ipAddressBinary;  
+        let copy = ipAddressValidation.ipAddressBinary;
         
         // The start index of the part of the necessary bits of the binary ipv6 address
         let startIndex = parseInt(variant);
@@ -40,25 +48,72 @@ document.addEventListener('DOMContentLoaded', () => {
         // The last known (last in the loop updated) sequence of necessary bits
         let lastKnownSubnet = copy.substring(startIndex, endIndex);
         
-        for (let i = 0; i < amountSubnets; i++) {
+        // The Data for the detailed solution
+        let detailedSolution = []
+
+        for (let i = 0; i < amountSubnets - 1; i++) {
+          detailedSolution.push({
+            relevantBitsPreviousSubnetBinary: undefined,
+            relevantBitsPreviousSubnetHexadecimal: undefined,
+            relevantBitsCurrentSubnetBinary: undefined,
+            relevantBitsCurrentSubnetHexadecimal: undefined,
+            fullIpv6AddressBinary: undefined,
+            fullIpv6AddressHexadecimal: undefined
+          })
+        }
+
+        for (let i = 0; i < amountSubnets - 1; i++) {
+          detailedSolution[i].relevantBitsPreviousSubnetBinary = lastKnownSubnet;
+          detailedSolution[i].relevantBitsPreviousSubnetHexadecimal = dualToHex(lastKnownSubnet);
+
+          lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(necessaryBits, '0');
+
+          endIndex = startIndex + lastKnownSubnet.length;
+
           let generatedSubnet = copy.substring(0, startIndex) + lastKnownSubnet + copy.substring(endIndex);
           generatedSubnets.binary.push(generatedSubnet);
 
-          lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(necessaryBits, '0');
+          detailedSolution[i].relevantBitsCurrentSubnetBinary       = lastKnownSubnet;
+          detailedSolution[i].relevantBitsCurrentSubnetHexadecimal  = dualToHex(lastKnownSubnet); // Überarbeiten
+          detailedSolution[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, startIndex) + `<span class="hint-decent">${lastKnownSubnet}</span>` + copy.substring(endIndex));
         }
 
-        for (let i = 0; i < amountSubnets; i++) {
+        for (let i = 0; i < amountSubnets - 1; i++) {
           let temp = generatedSubnets.binary[i].match(/.{1,16}/g);
           let ipv6Address = '';
           temp.forEach((block, _) => ipv6Address += `${dualToHex(block).padStart(4, '0')}:`);
           
-          generatedSubnets.hexadecimal.push(
-            ipv6Address.substring(0, ipv6Address.length - 1) + `/${subnet + necessaryBits}`
-          );
+          let fullIpAddress = ipv6Address.substring(0, ipv6Address.length - 1) + `/${subnet + necessaryBits}`;
+          generatedSubnets.hexadecimal.push(fullIpAddress);
+          detailedSolution[i].fullIpv6AddressHexadecimal = fullIpAddress;
         }
 
-        generateResults(generatedSubnets.hexadecimal);
+        detailedSolution.unshift({
+          relevantBitsPreviousSubnetBinary: ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex),
+          relevantBitsPreviousSubnetHexadecimal: dualToHex(ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex)),
+          relevantBitsCurrentSubnetBinary: ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex),
+          relevantBitsCurrentSubnetHexadecimal: dualToHex(ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex)),
+          fullIpv6AddressBinary: formatBinaryIpAddress(ipAddressValidation.ipAddressBinary),
+          fullIpv6AddressHexadecimal: ipAddressValidation.ipAddressHex
+        })
 
+        detailedSolution.forEach((elem, index) => {
+          if (index != 0) {
+            wrapperDetailedSolution.innerHTML += generateDetailedResultTableForSubnet(
+              ++index,
+              elem.relevantBitsPreviousSubnetBinary,
+              elem.relevantBitsPreviousSubnetHexadecimal,
+              elem.relevantBitsCurrentSubnetBinary,
+              elem.relevantBitsCurrentSubnetHexadecimal,
+              elem.fullIpv6AddressBinary,
+              elem.fullIpv6AddressHexadecimal
+            );
+          } else {
+            wrapperDetailedSolution.innerHTML += generateFirstSubnetResult(ipAddressValidation.ipAddressHex)
+          }
+        });
+
+        generateResultsTableForSubnet(detailedSolution.map((elem, _) => elem.fullIpv6AddressHexadecimal));
       } else {
         formFieldAmountSubnets.classList.add('is-invalid');
         formFieldAmountSubnets.classList.remove('is-valid');  
@@ -73,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Generates a Table with the calculated IPv6 Addresses
    * @param {Array<String>} ipAddresses The IP Addreses
    */
-  const generateResults = ipAddresses => {
+  const generateResultsTableForSubnet = ipAddresses => {
     let table = document.createElement('table');
     let tableHead = document.createElement('thead');
     let tableBody = document.createElement('tbody');
