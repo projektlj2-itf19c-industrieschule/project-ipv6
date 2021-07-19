@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formFieldAmountSubnets  = document.getElementById('amount-subnets');
   const btnGenerateSubnets      = document.getElementById('btn-generate-subnets');
 
-  const generateSubnets = () => {
+  const generateSubnets = variant => {
     let ipAdress = formFieldIpAddress.value;
     let amountSubnets = formFieldAmountSubnets.value;
     let subnet = parseInt(formFieldSubnet.value);
@@ -22,41 +22,42 @@ document.addEventListener('DOMContentLoaded', () => {
         formFieldAmountSubnets.classList.add('is-valid');
         formFieldAmountSubnets.classList.remove('is-invalid');
 
-        let exponent = Math.ceil(Math.log(amountSubnets) / Math.log(2));
-        let newSubnet = subnet + exponent;
+        // Calculating the necessary bits by calculating the logarithm of amountSubnets to the base of 2
+        let necessaryBits = Math.ceil(Math.log(amountSubnets) / Math.log(2));
+        
+        // All subnets in binary and hexadecimal format
+        let generatedSubnets = { binary: [], hexadecimal: [] };
+        
+        // Create a copy of the binary ipv4 address
+        let copy = ipAddressValidation.ipAddressBinary;  
+        
+        // The start index of the part of the necessary bits of the binary ipv6 address
+        let startIndex = parseInt(variant);
 
-        let idx = 3; // The index of the block
-        let idx2 = 0; // The index of the character in the block
-        let x = []; // All subnets
-        let copy = ipAddressValidation.ipAddressBinary; // Create a copy of the binary ipv4 address
+        // The end index of the part of the necessary bits of the binary ipv6 address
+        let endIndex = startIndex + necessaryBits;
 
+        // The last known (last in the loop updated) sequence of necessary bits
+        let lastKnownSubnet = copy.substring(startIndex, endIndex);
+        
         for (let i = 0; i < amountSubnets; i++) {
-          if (copy[idx][idx2] == '1111') {
-            if (idx2 == 3) {
-              idx++;
-              idx2 = 0;
-            } else {
-              idx2++;
-            }
-          }
+          let generatedSubnet = copy.substring(0, startIndex) + lastKnownSubnet + copy.substring(endIndex);
+          generatedSubnets.binary.push(generatedSubnet);
 
-          let dualNumber = copy[idx][idx2];
-          let decimalNumber = dualToDecimal(dualNumber);
-          let incrementedDecimalNumber = decimalNumber + 1;
-          let incrementedDualNumber = decimalToDual(incrementedDecimalNumber);
-
-          copy[idx][idx2] = incrementedDualNumber.padStart(4, '0');
-
-          console.log(`${dualNumber} ${copy[idx][idx2]} | ${idx} | ${idx2}`);
+          lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(necessaryBits, '0');
         }
 
-        /*
-          1. Wv subnetze -> 16
-          2. Exponent finden, um mit 2^n auf mindestens anzahl subnetze zu kommen --> 4
-          3. Exponent auf Quellsubnetz draufrechnen --> /52
-          4. 16 Subnetze zu je /52
-          5. ip
-        */
+        for (let i = 0; i < amountSubnets; i++) {
+          let temp = generatedSubnets.binary[i].match(/.{1,16}/g);
+          let ipv6Address = '';
+          temp.forEach((block, _) => ipv6Address += `${dualToHex(block).padStart(4, '0')}:`);
+          
+          generatedSubnets.hexadecimal.push(
+            ipv6Address.substring(0, ipv6Address.length - 1) + `/${subnet + necessaryBits}`
+          );
+        }
+
+        generateResults(generatedSubnets.hexadecimal);
 
       } else {
         formFieldAmountSubnets.classList.add('is-invalid');
@@ -68,6 +69,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  btnGenerateSubnets.addEventListener('click', generateSubnets);
+  /**
+   * Generates a Table with the calculated IPv6 Addresses
+   * @param {Array<String>} ipAddresses The IP Addreses
+   */
+  const generateResults = ipAddresses => {
+    let table = document.createElement('table');
+    let tableHead = document.createElement('thead');
+    let tableBody = document.createElement('tbody');
+    let tableHeadRow = document.createElement('tr');
+
+    let tableHeadIdColumn = document.createElement('th');
+    let tableHeadAddressColumn = document.createElement('th');
+    let tableHeadOptimizedAddressColumn = document.createElement('th');
+
+    tableHeadIdColumn.innerHTML = 'Nr.';
+    tableHeadAddressColumn.innerHTML = 'Vollständig IPv6-Adresse';
+    tableHeadOptimizedAddressColumn.innerHTML = 'Optimierte IPv6-Adresse';
+
+    tableHeadRow.appendChild(tableHeadIdColumn);
+    tableHeadRow.appendChild(tableHeadAddressColumn);
+    tableHeadRow.appendChild(tableHeadOptimizedAddressColumn);
+
+    tableHead.appendChild(tableHeadRow);
+    table.appendChild(tableHead);
+    table.appendChild(tableBody);
+
+    ipAddresses.forEach((ipAddress, index) => {
+      let tableRow = document.createElement('tr');
+      let idColumn = document.createElement('td');
+      let addressColumn = document.createElement('td');
+      let optimizedAddressColumn = document.createElement('td');
+
+      idColumn.innerHTML = index + 1;
+      addressColumn.innerHTML = ipAddress;
+      optimizedAddressColumn.innerHTML = ipAddress;
+
+      tableRow.append(idColumn);
+      tableRow.append(addressColumn);
+      tableRow.append(optimizedAddressColumn);
+
+      tableBody.appendChild(tableRow);
+    })
+
+    table.classList.add('table', 'table-striped', 'table-hover', 'border');
+
+    let containerResults = document.getElementById('container-results');
+    
+    containerResults.innerHTML = '';
+    containerResults.appendChild(table);
+  }
+
+  btnGenerateSubnets.addEventListener('click', () => generateSubnets(formFieldSubnet.value));
 
 });

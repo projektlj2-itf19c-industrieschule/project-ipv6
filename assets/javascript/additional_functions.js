@@ -47,7 +47,7 @@ const invert2ndBitOfMacAddress = macAddress => {
   let macAddressArray = macAddress.split(':');
   
   let firstByteDecimal = macAddressArray[0];
-  let firstByteDual = hexToDual(macAddressArray[0]);
+  let firstByteDual = hexToBinary(macAddressArray[0], 8);
   let firstByteInvertedDual = firstByteDual.substring(0, 6);
   let firstByteInvertedDecimal = null;
 
@@ -105,8 +105,6 @@ const assemblePrefixAndEUI64Identifier = macAddress => {
     count++;
   }
 
-  console.log(ipv6Prefix);
-
   ipv6Prefix = ipv6Prefix.substring(0, ipv6Prefix.length - 1);
 
   return {
@@ -124,7 +122,7 @@ const assemblePrefixAndEUI64Identifier = macAddress => {
  * @returns {String} The HTML Markup
  */
 const getHint = html => {
-  return `<span class="hint">${html}</span>`;
+  return `<span class="badge rounded-pill bg-success mx-2">${html}</span>`;
 }
 
 /**
@@ -154,9 +152,11 @@ const ipv6AdressValid = ipAddress => {
   let formattedIpAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
   let ipAddressSplitted = formattedIpAddress.split(':');
 
+  // Validating length
   if (formattedIpAddress.length < 12 || formattedIpAddress.length > 14)
     valid = false;
 
+  // Validating format
   if (!formattedIpAddress.match(/^([0-9a-fA-F]{4}:){2}([0-9a-fA-F]{4})$/))
     valid = false;
 
@@ -165,25 +165,12 @@ const ipv6AdressValid = ipAddress => {
     for (let i = ipAddressSplitted.length; i < 8; i++)
       ipAddressSplitted.push('0000');
   }
-
+  
   // Fill blocks with leading zeros if necessary
-  formattedIpAddress = '';
-  ipAddressSplitted.forEach((block, index) => {
-    if (block.length < 4)
-      ipAddressSplitted[index] = block.padStart(4, '0');
-  });
+  ipAddressSplitted.forEach((block, index) => ipAddressSplitted[index] = block.padStart(4, '0'));
 
-  // Generate a full ipv6 addess
-  formattedIpAddress = '';
-  ipAddressSplitted.forEach((block, index) => formattedIpAddress += `${block}:`);
-  formattedIpAddress = formattedIpAddress.substring(0, formattedIpAddress.length - 1);
-
-  ipAddressBinary = [];
-  ipAddressSplitted.forEach((block, index) => {
-    let temp = [];
-    block.match(/.{1}/g).forEach((hexNumber, idx) => temp.push(hexToDual(hexNumber)));
-    ipAddressBinary.push(temp);
-  });
+  let ipAddressBinary = '';
+  ipAddressSplitted.forEach((block, _) => ipAddressBinary += hexToBinary(block, 16));
 
   return {
     valid: valid,
@@ -208,10 +195,11 @@ const numberValid = number => {
 /**
  * Converts a hexadecimal number to a dual number
  * @param {String} hexNumber The hexadecimal number to convert
+ * @param {Number} padStart The wished length of the Number
  * @returns {String} The dual number 
  */
-const hexToDual = hexNumber => {
-  return (parseInt(hexNumber, 16).toString(2)).padStart(8, '0');
+const hexToBinary = (hexNumber, padStart) => {
+  return (parseInt(hexNumber, 16).toString(2)).padStart(padStart, '0');
 }
 
 /**
@@ -224,9 +212,42 @@ const dualToHex = dualNumber => {
 }
 
 const dualToDecimal = dual => {
-  return parseInt(dual, 2).toString();
+  return parseInt(dual, 2);
 }
 
 const decimalToDual = decimal => {
   return (parseInt(decimal) >>> 0).toString(2);
+}
+
+const binaryIpArrayToHexIp = (binaryIpArray, subnetMask) => {
+  let hexIp = '';
+  binaryIpArray.forEach((block, _) => {
+    let temp = '';
+    block.forEach((hexAsBinary, _) => temp += hexAsBinary);
+    hexIp += `${dualToHex(temp)}:`;
+  });
+
+  return `${hexIp.substring(0, hexIp.length - 1)}/${subnetMask}`;
+}
+
+const binaryIpArrayToBinaryIp = (binaryIpArray, subnetMask) => {
+  let binaryIp = '';
+  binaryIpArray.forEach((block, _) => {
+    let temp = '';
+    block.forEach((hexAsBinary, _) => temp += hexAsBinary);
+    binaryIp += `${temp}:`;
+  });
+
+  return `${binaryIp.substring(0, binaryIp.length - 1)}/${subnetMask}`;
+}
+
+const binaryIpArrayToBinary = binaryIpArray => {
+  let binaryIp = '';
+  binaryIpArray.forEach((block, _) => {
+    let temp = '';
+    block.forEach((hexAsBinary, _) => temp += hexAsBinary);
+    binaryIp += temp;
+  });
+
+  return binaryIp;
 }
