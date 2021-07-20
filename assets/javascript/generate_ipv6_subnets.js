@@ -1,21 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  const formFieldIpAddress      = document.getElementById('ip-address');
-  const formFieldSubnet         = document.getElementById('ip-address-subnet');
-  const formFieldAmountSubnets  = document.getElementById('amount-subnets');
-  const btnGenerateSubnets      = document.getElementById('btn-generate-subnets');
+  const formFieldIpAddress              = document.getElementById('ip-address');
+  const formFieldSubnet                 = document.getElementById('ip-address-subnet');
+  const formFieldAmountSubnets          = document.getElementById('amount-subnets');
+  const btnGenerateSubnets              = document.getElementById('btn-generate-subnets');
 
-  const accordionButtonSolution = document.getElementById('accordion-button-solution');
+  const accordionButtonSolution         = document.getElementById('accordion-button-solution');
   const accordionButtonDetailedSolution = document.getElementById('accordion-button-detailed-solution');
 
-  const wrapperDetailedSolution = document.getElementById('wrapper-detailed-solution');
+  const wrapperDetailedSolution         = document.getElementById('wrapper-detailed-solution');
+
+  const startPrefix                             = document.getElementById('start-prefix');
+  const startSubnetMask                         = document.getElementById('start-subnet-mask');
+  const startAmountSubnets                      = document.getElementById('start-amount-subnets');
+  
+  const calcBitsAmountSubnetsSource             = document.getElementById('calc-bits-amount-subnets-source');
+  const calcBitsAmountSubnetsLog                = document.getElementById('calc-bits-amount-subnets-log');
+  const calcBitsPotence                         = document.getElementById('calc-bits-potence');
+
+  const calcSubnetMaskStartSubnetMask           = document.getElementById('calc-subnet-mask-start-subnet-mask');
+  const calcSubnetMaskStartSubnetMaskAmountBits = document.getElementById('calc-subnet-mask-amount-bits');
+  const calcSubnetMaskStartResult               = document.getElementById('calc-subnet-mask-result');
 
   const generateSubnets = variant => {
     let ipAdress = formFieldIpAddress.value;
     let amountSubnets = formFieldAmountSubnets.value;
     let subnet = parseInt(formFieldSubnet.value);
     
-    let ipAddressValidation = ipv6AdressValid(ipAdress);
+    let ipAddressValidation = ipv6AdressValid(ipAdress, variant);
     let amountSubnetsValidation = numberValid(amountSubnets);
 
     if (ipAddressValidation.valid) {
@@ -50,6 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // The Data for the detailed solution
         let detailedSolution = []
+
+        startPrefix.innerHTML = ipAdress.toString();
+        startSubnetMask.innerHTML = subnet.toString();
+        startAmountSubnets.innerHTML = amountSubnetsValidation.number.toString();
+
+        calcBitsAmountSubnetsSource.innerHTML = amountSubnets.toString();
+        calcBitsAmountSubnetsLog.innerHTML = amountSubnets.toString();
+        calcBitsPotence.innerHTML = necessaryBits.toString();
+
+        calcSubnetMaskStartSubnetMask.innerHTML = subnet.toString();
+        calcSubnetMaskStartSubnetMaskAmountBits.innerHTML = necessaryBits.toString();
+        calcSubnetMaskStartResult.innerHTML = (subnet + necessaryBits).toString();
 
         for (let i = 0; i < amountSubnets - 1; i++) {
           detailedSolution.push({
@@ -96,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
           fullIpv6AddressBinary: formatBinaryIpAddress(ipAddressValidation.ipAddressBinary),
           fullIpv6AddressHexadecimal: `${ipAddressValidation.ipAddressHex}/${subnet + necessaryBits}`
         })
+
+        wrapperDetailedSolution.innerHTML = '';
 
         detailedSolution.forEach((elem, index) => {
           if (index != 0) {
@@ -175,6 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     containerResults.appendChild(table);
   }
 
-  btnGenerateSubnets.addEventListener('click', () => generateSubnets(formFieldSubnet.value));
+  btnGenerateSubnets.addEventListener('click', () => generateSubnets(parseInt(formFieldSubnet.value)));
 
 });

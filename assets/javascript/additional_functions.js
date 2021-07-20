@@ -10,10 +10,10 @@ const generateHtmlFromString = s => {
 }
 
 /**
-   * Inserts the hexadecimal number FFFE in the middle of the MAC-Address
-   * @param {String} macAddress The Source MAC-Address 
-   * @returns {String} The MAC-Address with the hexadecimal number FFFE in the middle
-   */
+ * Inserts the hexadecimal number FFFE in the middle of the MAC-Address
+ * @param {String} macAddress The Source MAC-Address 
+ * @returns {String} The MAC-Address with the hexadecimal number FFFE in the middle
+ */
  const insertFFFEInTheMiddleOfMacAddress = macAddress => {
   let macAddressArray = macAddress.split(':');
   let macAddressWithFFFE = '';
@@ -85,9 +85,9 @@ const invert2ndBitOfMacAddress = macAddress => {
 }
 
 /**
- * 
- * @param {*} macAddress 
- * @returns 
+ * Combines the Prefix in the EUI64 Identifier
+ * @param {String} macAddress The EUI64 Identifier
+ * @returns {String} 
  */
 const assemblePrefixAndEUI64Identifier = macAddress => {
   let EUI64Identifier = 'FE80:0000:0000:0000';
@@ -147,19 +147,26 @@ const macAddressValid = macAddress => {
  * @param {String} ipv6Adress The Source IPv6-Address
  * @returns {Object}
  */
-const ipv6AdressValid = ipAddress => {
+const ipv6AdressValid = (ipAddress, variant) => {
   let valid = true;
   let formattedIpAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
   let ipAddressSplitted = formattedIpAddress.split(':');
   let ipAddressHex = '';
 
-  // Validating length
-  if (formattedIpAddress.length < 12 || formattedIpAddress.length > 14)
-    valid = false;
+  // Validating lenght and format
+  if (variant == 48) {
+    if (formattedIpAddress.length < 12 || formattedIpAddress.length > 14)
+      valid = false;
 
-  // Validating format
-  if (!formattedIpAddress.match(/^([0-9a-fA-F]{4}:){2}([0-9a-fA-F]{4})$/))
-    valid = false;
+    if (!formattedIpAddress.match(/^([0-9a-fA-F]{4}:){2}([0-9a-fA-F]{4})$/))
+      valid = false;
+  } else {
+    if (formattedIpAddress.length < 12 || formattedIpAddress.length > 17)
+      valid = false;
+
+    if (!formattedIpAddress.match(/^([0-9a-fA-F]{4}:){3}([0-9a-fA-F]{2})$/))
+      valid = false;
+  }
 
   // Fill to complete ipv6 address
   if (ipAddressSplitted.length < 8) {
@@ -168,7 +175,7 @@ const ipv6AdressValid = ipAddress => {
   }
   
   // Fill blocks with leading zeros if necessary
-  ipAddressSplitted.forEach((block, index) => ipAddressSplitted[index] = block.padStart(4, '0'));
+  ipAddressSplitted.forEach((block, index) => ipAddressSplitted[index] = (variant == 48 ? block.padStart(4, '0') : block.padEnd(4, '0')));
 
   let ipAddressBinary = '';
   ipAddressSplitted.forEach((block, _) => ipAddressBinary += hexToBinary(block, 16));
@@ -214,14 +221,30 @@ const dualToHex = dualNumber => {
   return parseInt(dualNumber, 2).toString(16).toUpperCase();
 }
 
+/**
+ * Converts a dual number to a decimal number
+ * @param {String} dual 
+ * @returns
+ */
 const dualToDecimal = dual => {
   return parseInt(dual, 2);
 }
 
+/**
+ * Converts a decimal number to a dual number
+ * @param {Number} decimal 
+ * @returns 
+ */
 const decimalToDual = decimal => {
   return (parseInt(decimal) >>> 0).toString(2);
 }
 
+/**
+ * Converts a binary IP array to an hexadecimal IP
+ * @param {Array[String]} binaryIpArray 
+ * @param {String} subnetMask 
+ * @returns {String} The hexadecimal IP Address
+ */
 const binaryIpArrayToHexIp = (binaryIpArray, subnetMask) => {
   let hexIp = '';
   binaryIpArray.forEach((block, _) => {
@@ -233,6 +256,12 @@ const binaryIpArrayToHexIp = (binaryIpArray, subnetMask) => {
   return `${hexIp.substring(0, hexIp.length - 1)}/${subnetMask}`;
 }
 
+/**
+ * Converts a binary IP array to an binary IP
+ * @param {Array[String]} binaryIpArray 
+ * @param {String} subnetMask 
+ * @returns {String} The binary IP Address
+ */
 const binaryIpArrayToBinaryIp = (binaryIpArray, subnetMask) => {
   let binaryIp = '';
   binaryIpArray.forEach((block, _) => {
@@ -244,6 +273,12 @@ const binaryIpArrayToBinaryIp = (binaryIpArray, subnetMask) => {
   return `${binaryIp.substring(0, binaryIp.length - 1)}/${subnetMask}`;
 }
 
+/**
+ * Converts a binary IP array to an binary String
+ * @param {Array[String]} binaryIpArray 
+ * @param {String} subnetMask 
+ * @returns {String} The binary String
+ */
 const binaryIpArrayToBinary = binaryIpArray => {
   let binaryIp = '';
   binaryIpArray.forEach((block, _) => {
@@ -257,7 +292,6 @@ const binaryIpArrayToBinary = binaryIpArray => {
 
 /**
  * This function generates the result table of a subnet
- * 
  * @param {String} relevantBitsPreviousSubnetBinary The relevant bits of the previous subnet in binary format
  * @param {String} relevantBitsPreviousSubnetHexadecimal The relevant bits of the previous subnet in hexadecimal format
  * @param {String} relevantBitsCurrentSubnetBinary The relevant bits of the current subnet in binary format
@@ -325,7 +359,6 @@ const generateDetailedResultTableForSubnet = (
 
 /**
  * This function generates the result table of a subnet
- * 
  * @param {String} prefix 
  */
  const generateFirstSubnetResult = ipAddress => {
@@ -353,6 +386,11 @@ const generateDetailedResultTableForSubnet = (
   `
 }
 
+/**
+ * Formats a binary IP Address
+ * @param {String} ipAddress 
+ * @returns {String} The formatted IP-Address in binary format
+ */
 const formatBinaryIpAddress = ipAddress => {
   let countBlock = 0;
   let countChar = 0;
@@ -381,6 +419,6 @@ const formatBinaryIpAddress = ipAddress => {
   return formatted;
 }
 
-const fillIPv6Addess = rawIPv6Address => {
-  fillIPv6Addess
+const optimizeIpAddress = ipAddress => {
+
 }
