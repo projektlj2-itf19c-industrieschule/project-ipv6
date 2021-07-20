@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  const formFieldIpAddress              = document.getElementById('ip-address');
-  const formFieldSubnet                 = document.getElementById('ip-address-subnet');
-  const formFieldAmountSubnets          = document.getElementById('amount-subnets');
-  const btnGenerateSubnets              = document.getElementById('btn-generate-subnets');
+  // UI Elements
+  const formFieldIpAddress                      = document.getElementById('ip-address');
+  const formFieldSubnet                         = document.getElementById('ip-address-subnet');
+  const formFieldAmountSubnets                  = document.getElementById('amount-subnets');
+  const btnGenerateSubnets                      = document.getElementById('btn-generate-subnets');
 
-  const accordionButtonSolution         = document.getElementById('accordion-button-solution');
-  const accordionButtonDetailedSolution = document.getElementById('accordion-button-detailed-solution');
+  const accordionButtonSolution                 = document.getElementById('accordion-button-solution');
+  const accordionButtonDetailedSolution         = document.getElementById('accordion-button-detailed-solution');
 
-  const wrapperDetailedSolution         = document.getElementById('wrapper-detailed-solution');
+  const wrapperDetailedSolution                 = document.getElementById('wrapper-detailed-solution');
 
   const startPrefix                             = document.getElementById('start-prefix');
   const startSubnetMask                         = document.getElementById('start-subnet-mask');
@@ -22,12 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const calcSubnetMaskStartSubnetMaskAmountBits = document.getElementById('calc-subnet-mask-amount-bits');
   const calcSubnetMaskStartResult               = document.getElementById('calc-subnet-mask-result');
 
+  /**
+   * This functions generates the subnets for a specific variant (48 of 56)
+   * @param {Number} variant The variant (either 48 or 56)
+   */
   const generateSubnets = variant => {
     let ipAdress = formFieldIpAddress.value;
     let amountSubnets = formFieldAmountSubnets.value;
     let subnet = parseInt(formFieldSubnet.value);
     
-    let ipAddressValidation = ipv6AdressValid(ipAdress, variant);
+    let ipAddressValidation = validateIPv6Address(ipAdress, variant);
     let amountSubnetsValidation = numberValid(amountSubnets);
 
     if (ipAddressValidation.valid) {
@@ -63,26 +68,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // The Data for the detailed solution
         let detailedSolution = []
 
-        startPrefix.innerHTML = ipAdress.toString();
-        startSubnetMask.innerHTML = subnet.toString();
-        startAmountSubnets.innerHTML = amountSubnetsValidation.number.toString();
+        startPrefix.innerHTML                             = ipAdress.toString();
+        startSubnetMask.innerHTML                         = subnet.toString();
+        startAmountSubnets.innerHTML                      = amountSubnetsValidation.number.toString();
 
-        calcBitsAmountSubnetsSource.innerHTML = amountSubnets.toString();
-        calcBitsAmountSubnetsLog.innerHTML = amountSubnets.toString();
-        calcBitsPotence.innerHTML = necessaryBits.toString();
+        calcBitsAmountSubnetsSource.innerHTML             = amountSubnets.toString();
+        calcBitsAmountSubnetsLog.innerHTML                = amountSubnets.toString();
+        calcBitsPotence.innerHTML                         = necessaryBits.toString();
 
-        calcSubnetMaskStartSubnetMask.innerHTML = subnet.toString();
+        calcSubnetMaskStartSubnetMask.innerHTML           = subnet.toString();
         calcSubnetMaskStartSubnetMaskAmountBits.innerHTML = necessaryBits.toString();
-        calcSubnetMaskStartResult.innerHTML = (subnet + necessaryBits).toString();
+        calcSubnetMaskStartResult.innerHTML               = (subnet + necessaryBits).toString();
 
         for (let i = 0; i < amountSubnets - 1; i++) {
           detailedSolution.push({
-            relevantBitsPreviousSubnetBinary: undefined,
-            relevantBitsPreviousSubnetHexadecimal: undefined,
-            relevantBitsCurrentSubnetBinary: undefined,
-            relevantBitsCurrentSubnetHexadecimal: undefined,
-            fullIpv6AddressBinary: undefined,
-            fullIpv6AddressHexadecimal: undefined
+            relevantBitsPreviousSubnetBinary:       undefined,
+            relevantBitsPreviousSubnetHexadecimal:  undefined,
+            relevantBitsCurrentSubnetBinary:        undefined,
+            relevantBitsCurrentSubnetHexadecimal:   undefined,
+            fullIpv6AddressBinary:                  undefined,
+            fullIpv6AddressHexadecimal:             undefined
           })
         }
 

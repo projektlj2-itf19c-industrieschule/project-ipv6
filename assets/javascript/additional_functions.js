@@ -147,7 +147,7 @@ const macAddressValid = macAddress => {
  * @param {String} ipv6Adress The Source IPv6-Address
  * @returns {Object}
  */
-const ipv6AdressValid = (ipAddress, variant) => {
+const validateIPv6Address = (ipAddress, variant) => {
   let valid = true;
   let formattedIpAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('.', ':').replaceAll('-', ':');
   let ipAddressSplitted = formattedIpAddress.split(':');
@@ -186,6 +186,85 @@ const ipv6AdressValid = (ipAddress, variant) => {
     ipAddressBinary: ipAddressBinary,
     ipAddressHex: ipAddressHex.substring(0, ipAddressHex.length - 1)
   };
+}
+
+/**
+ * Checks if an IPv6-Address is valid
+ * @param {String} ipAddress
+ */
+const isIPv6AddressValid = ipAddress => {
+  let valid = true;
+
+  let lastDigitWasColon = false;
+  let doubleColonAppeared = false;
+  let colonCount = 0;
+  let hexSymbolCount = 0;
+  let invalidReason = undefined;
+
+  let hexSymbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+  ipAddress = ipAddress.trim().replaceAll(' ', '').replaceAll('-', ':').replaceAll('.', ':');
+
+  // IPv6 Address has to be at least 2 and at most 39 characters long
+  if (ipAddress.length < 2 || ipAddress.length > 39) {
+    valid = false;
+    invalidReason = 'IP-Adresse is zu lang oder zu kurz';
+  }
+
+  if (!valid)
+    return {
+      valid: valid,
+      invalidReason: invalidReason
+    }
+
+  ipAddress.split('').forEach((letter, _) => {
+    if (!valid)
+      return {
+        valid: valid,
+        invalidReason: invalidReason
+      }
+
+    if (letter == ':') {
+      if (lastDigitWasColon) {
+        // Double-double-colons are only allowed one time (A::B::C is invalid)
+        if (doubleColonAppeared) {
+          valid = false;
+          invalidReason = 'Doppel-Doppelpunkt kommt doppelt vor';
+        }
+        
+        doubleColonAppeared = true;
+      }
+
+      colonCount++;
+      hexSymbolCount = 0;
+    } else {
+      // Each letter must be a valid hexadecimal character
+      if (hexSymbols.includes(letter)) {
+        hexSymbolCount++;
+
+        // Blocks can't be greater than 16 Bits (4 hexadecimal characters)
+        if (hexSymbolCount > 4) {
+          valid = false;
+          invalidReason = 'Enthält eine Hexadezimalzahl, die länger als 4 Zeichen ist'; 
+        } 
+      } else {
+        valid = false;
+        invalidReason = 'Enthält ungültige Zeichen'; 
+      }
+    }
+    lastDigitWasColon = letter === ':';
+  });
+
+  // A valid IPv6 Adress has at least two and at most 7 colons
+  if (valid && (colonCount < 2 || colonCount > 7)) {
+    valid = false;
+    invalidReason = 'Enthält zu viele oder zu wenige Doppelpunkte';
+  }
+
+  return {
+    valid: valid,
+    invalidReason: invalidReason
+  }
 }
 
 /**
@@ -258,7 +337,7 @@ const binaryIpArrayToHexIp = (binaryIpArray, subnetMask) => {
 
 /**
  * Converts a binary IP array to an binary IP
- * @param {Array[String]} binaryIpArray 
+ * @param {Array[String]} binaryIpArray
  * @param {String} subnetMask 
  * @returns {String} The binary IP Address
  */
