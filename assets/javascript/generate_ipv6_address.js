@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
       stepOneMacAddressWithFFEE.innerHTML             = ipAddressGenerator.withFffeInsertedAsHtml();
 
       stepTwoMacAddressWithFFEE.innerHTML             = ipAddressGenerator.withFffeAsHTML();
-      stepTwoFirstByteHex.innerHTML               = ipAddressGenerator.firstByteHexAsHTML();
+      stepTwoFirstByteHex.innerHTML                   = ipAddressGenerator.firstByteHexAsHTML();
       stepTwoFirstByteDual.innerHTML                  = ipAddressGenerator.firstByteBinaryAsHTML();
-      stepTwoFirstByteHexInverted.innerHTML       = ipAddressGenerator.firstByteInvertedHexAsHTML();
+      stepTwoFirstByteHexInverted.innerHTML           = ipAddressGenerator.firstByteInvertedHexAsHTML();
       stepTwoFirstByteDualInverted.innerHTML          = ipAddressGenerator.firstByteInvertedBinaryAsHTML();
       stepTwoMacAddressWith2ndBitInverted.innerHTML   = ipAddressGenerator.withSecondBitInvertedAsHTML();
     

@@ -1,4 +1,7 @@
-class IpAddressSimplifier {
+/**
+ * This class is used to optimize IPv6 Addresses according to RFC4291
+ */
+class IpAddressOptimizer {
   
   /**
    * The Constructor of this Class
@@ -44,34 +47,8 @@ class IpAddressSimplifier {
     this._ipWithTrailingZerosRemoved = ipWithTrailingZerosRemoved.substr(0, ipWithTrailingZerosRemoved.length - 1);
   }
 
-  /**
-   * Replaces the longest following sequence of blocks consisting of zeros with "::"
-   */
   _combineBlocks() {
-    this._ipWithBlockCombined = '';
-
-    let temp = this._ipWithTrailingZerosRemoved.replaceAll('0:', ':');
-
-    let colonCounts = [];
-    let tempCountColonCount = 0;
-    let previousWasColon = false;
-
-    temp.split('').forEach(hexNumber => {
-      if (hexNumber === ':') {
-        tempCountColonCount++;
-        previousWasColon = true;
-      } else {
-        if (previousWasColon && tempCountColonCount > 1)
-        colonCounts.push(tempCountColonCount);
-        tempCountColonCount = 0;
-      }
-    });
-
-    let replaceString = '';
-    for (let i = 0; i < (Math.max(...colonCounts)); i++)
-      replaceString += '0:';
-
-    this._ipWithBlockCombined = this._ipWithTrailingZerosRemoved.replace(replaceString, '::');
+    this._ipWithBlockCombined = this._ipWithTrailingZerosRemoved.replace(/\b(?:0+:){2,}/, ':');
   }
 
   /**
@@ -97,12 +74,26 @@ class IpAddressSimplifier {
   }
 
   /**
-   * Creates a new Instance of the IpAddressSimplifier
-   * @param {String} ipAddress The IP Address of the IpAddressSimplifier
-   * @returns {IpAddressSimplifier} The IpAddressSimplifier
+   * Returns the full optimized IPv6 Address
+   * @returns The full optimized IPv6 Address
+   */
+  optimizedAddress() {
+    if (this._ipWithTrailingZerosRemoved === undefined)
+      this._removeTrailingZeros();
+
+    if (this._ipWithBlockCombined === undefined)
+      this._combineBlocks();
+
+    return this._ipWithBlockCombined;
+  }
+
+  /**
+   * Creates a new Instance of the IpAddressOptimizer
+   * @param {String} ipAddress The IP Address of the IpAddressOptimizer
+   * @returns {IpAddressOptimizer} The IpAddressOptimizer
    */
   static getInstance(ipAddress) {
-    return new IpAddressSimplifier(ipAddress);
+    return new IpAddressOptimizer(ipAddress);
   }
 
 }

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const solutionWrapper       = document.getElementById('solution-wrapper');
 
   const stepOneSource         = document.getElementById('step-one-source');
-  const stepOneResult         = document.getElementById('step-two-result');
+  const stepOneResult         = document.getElementById('step-one-result');
 
   const stepTwoSource         = document.getElementById('step-two-source');
   const stepTwoResult         = document.getElementById('step-two-result');
@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       solutionWrapper.classList.remove('d-none');
 
-      let ipAddressSimplified = IpAddressSimplifier.getInstance(ipAddress);
+      let ipAddressOptimized = IpAddressOptimizer.getInstance(ipAddress);
 
       stepOneSource.innerHTML = ipAddress;
-      stepOneResult.innerHTML = ipAddressSimplified.withTrailingZerosRemoved();
+      stepOneResult.innerHTML = ipAddressOptimized.withTrailingZerosRemoved();
 
-      stepTwoSource.innerHTML = ipAddressSimplified.withTrailingZerosRemoved();
-      stepTwoResult.innerHTML = ipAddressSimplified.withBlocksCombined();
+      stepTwoSource.innerHTML = ipAddressOptimized.withTrailingZerosRemoved();
+      stepTwoResult.innerHTML = ipAddressOptimized.withBlocksCombined();
     } else {
       formFieldIpAddress.classList.add('is-invalid');
       formFieldIpAddress.classList.remove('is-valid');

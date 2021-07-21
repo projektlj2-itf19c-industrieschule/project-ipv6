@@ -1,3 +1,6 @@
+/**
+ * This class is used to generate an IPv6 Address using SLAAC
+ */
 class IpAddressGenerator {
 
   /**

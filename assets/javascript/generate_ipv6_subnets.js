@@ -28,123 +28,51 @@ document.addEventListener('DOMContentLoaded', () => {
    * @param {Number} variant The variant (either 48 or 56)
    */
   const generateSubnets = variant => {
-    let ipAdress = formFieldIpAddress.value;
-    let amountSubnets = formFieldAmountSubnets.value;
-    let subnet = parseInt(formFieldSubnet.value);
+    let prefixValidator         = new PrefixValidator(formFieldIpAddress.value, formFieldSubnet.value);
+    let subnetValidator         = new NumberValidator(formFieldSubnet.value);
+    let amountSubnetsValidator  = new NumberValidator(formFieldAmountSubnets.value);
     
-    let ipAddressValidation = validateIPv6Address(ipAdress, variant);
-    let amountSubnetsValidation = numberValid(amountSubnets);
-
-    if (ipAddressValidation.valid) {
+    if (prefixValidator.isValid()) {
       formFieldIpAddress.classList.add('is-valid');
       formFieldIpAddress.classList.remove('is-invalid');
 
-      if (amountSubnetsValidation.valid) {
-        amountSubnets = amountSubnetsValidation.number;
-        
-        formFieldAmountSubnets.classList.add('is-valid');
-        formFieldAmountSubnets.classList.remove('is-invalid');
-        accordionButtonSolution.disabled = false;
-        accordionButtonDetailedSolution.disabled = false;
+      if (subnetValidator.isValid()) {
+        formFieldIpAddress.classList.add('is-valid');
+        formFieldIpAddress.classList.remove('is-invalid');
 
-        // Calculating the necessary bits by calculating the logarithm of amountSubnets to the base of 2
-        let necessaryBits = Math.ceil(Math.log(amountSubnets) / Math.log(2));
-        
-        // All subnets in binary and hexadecimal format
-        let generatedSubnets = { binary: [], hexadecimal: [] };
-        
-        // Create a copy of the binary ipv4 address
-        let copy = ipAddressValidation.ipAddressBinary;
-        
-        // The start index of the part of the necessary bits of the binary ipv6 address
-        let startIndex = parseInt(variant);
+        if (amountSubnetsValidator.isValid()) {
+          formFieldAmountSubnets.classList.add('is-valid');
+          formFieldAmountSubnets.classList.remove('is-invalid');
 
-        // The end index of the part of the necessary bits of the binary ipv6 address
-        let endIndex = startIndex + necessaryBits;
+          accordionButtonSolution.disabled = false;
+          accordionButtonDetailedSolution.disabled = false;
 
-        // The last known (last in the loop updated) sequence of necessary bits
-        let lastKnownSubnet = copy.substring(startIndex, endIndex);
-        
-        // The Data for the detailed solution
-        let detailedSolution = []
+          let subnetGenerator = new SubnetGenerator(prefixValidator.ipBinary(), prefixValidator.ipHex(), subnetValidator.getNumber(), amountSubnetsValidator.getNumber());
 
-        startPrefix.innerHTML                             = ipAdress.toString();
-        startSubnetMask.innerHTML                         = subnet.toString();
-        startAmountSubnets.innerHTML                      = amountSubnetsValidation.number.toString();
+          startPrefix.innerHTML                             = prefixValidator.getPrefix();
+          startSubnetMask.innerHTML                         = subnetValidator.getNumber().toString();
+          startAmountSubnets.innerHTML                      = amountSubnetsValidator.getNumber().toString();
 
-        calcBitsAmountSubnetsSource.innerHTML             = amountSubnets.toString();
-        calcBitsAmountSubnetsLog.innerHTML                = amountSubnets.toString();
-        calcBitsPotence.innerHTML                         = necessaryBits.toString();
+          calcBitsAmountSubnetsSource.innerHTML             = amountSubnetsValidator.getNumber().toString();
+          calcBitsAmountSubnetsLog.innerHTML                = amountSubnetsValidator.getNumber().toString();
+          calcBitsPotence.innerHTML                         = subnetGenerator.necessaryBits().toString();
 
-        calcSubnetMaskStartSubnetMask.innerHTML           = subnet.toString();
-        calcSubnetMaskStartSubnetMaskAmountBits.innerHTML = necessaryBits.toString();
-        calcSubnetMaskStartResult.innerHTML               = (subnet + necessaryBits).toString();
+          calcSubnetMaskStartSubnetMask.innerHTML           = subnetValidator.getNumber().toString();
+          calcSubnetMaskStartSubnetMaskAmountBits.innerHTML = subnetGenerator.necessaryBits().toString();
+          calcSubnetMaskStartResult.innerHTML               = subnetGenerator.newSubnet().toString();
 
-        for (let i = 0; i < amountSubnets - 1; i++) {
-          detailedSolution.push({
-            relevantBitsPreviousSubnetBinary:       undefined,
-            relevantBitsPreviousSubnetHexadecimal:  undefined,
-            relevantBitsCurrentSubnetBinary:        undefined,
-            relevantBitsCurrentSubnetHexadecimal:   undefined,
-            fullIpv6AddressBinary:                  undefined,
-            fullIpv6AddressHexadecimal:             undefined
-          })
-        }
-
-        for (let i = 0; i < amountSubnets - 1; i++) {
-          detailedSolution[i].relevantBitsPreviousSubnetBinary = lastKnownSubnet;
-          detailedSolution[i].relevantBitsPreviousSubnetHexadecimal = dualToHex(lastKnownSubnet);
-
-          lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(necessaryBits, '0');
-
-          endIndex = startIndex + lastKnownSubnet.length;
-
-          let generatedSubnet = copy.substring(0, startIndex) + lastKnownSubnet + copy.substring(endIndex);
-          generatedSubnets.binary.push(generatedSubnet);
-
-          detailedSolution[i].relevantBitsCurrentSubnetBinary       = lastKnownSubnet;
-          detailedSolution[i].relevantBitsCurrentSubnetHexadecimal  = dualToHex(lastKnownSubnet); // Überarbeiten
-          detailedSolution[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, startIndex) + `<span class="hint-decent">${lastKnownSubnet}</span>` + copy.substring(endIndex));
-        }
-
-        for (let i = 0; i < amountSubnets - 1; i++) {
-          let temp = generatedSubnets.binary[i].match(/.{1,16}/g);
-          let ipv6Address = '';
-          temp.forEach((block, _) => ipv6Address += `${dualToHex(block).padStart(4, '0')}:`);
+          wrapperDetailedSolution.innerHTML = '';
           
-          let fullIpAddress = ipv6Address.substring(0, ipv6Address.length - 1) + `/${subnet + necessaryBits}`;
-          generatedSubnets.hexadecimal.push(fullIpAddress);
-          detailedSolution[i].fullIpv6AddressHexadecimal = fullIpAddress;
+          let detailedSolutions = subnetGenerator.detailedSolutions();
+
+          generateDetailedResults(detailedSolutions);
+          generateResultsTableForSubnet(detailedSolutions.map((elem, _) => elem.fullIpv6AddressHexadecimal));
+
+        } else {
+          formFieldAmountSubnets.classList.add('is-invalid');
+          formFieldAmountSubnets.classList.remove('is-valid');
         }
 
-        detailedSolution.unshift({
-          relevantBitsPreviousSubnetBinary: ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex),
-          relevantBitsPreviousSubnetHexadecimal: dualToHex(ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex)),
-          relevantBitsCurrentSubnetBinary: ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex),
-          relevantBitsCurrentSubnetHexadecimal: dualToHex(ipAddressValidation.ipAddressBinary.substring(startIndex, endIndex)),
-          fullIpv6AddressBinary: formatBinaryIpAddress(ipAddressValidation.ipAddressBinary),
-          fullIpv6AddressHexadecimal: `${ipAddressValidation.ipAddressHex}/${subnet + necessaryBits}`
-        })
-
-        wrapperDetailedSolution.innerHTML = '';
-
-        detailedSolution.forEach((elem, index) => {
-          if (index != 0) {
-            wrapperDetailedSolution.innerHTML += generateDetailedResultTableForSubnet(
-              ++index,
-              elem.relevantBitsPreviousSubnetBinary,
-              elem.relevantBitsPreviousSubnetHexadecimal,
-              elem.relevantBitsCurrentSubnetBinary,
-              elem.relevantBitsCurrentSubnetHexadecimal,
-              elem.fullIpv6AddressBinary,
-              elem.fullIpv6AddressHexadecimal
-            );
-          } else {
-            wrapperDetailedSolution.innerHTML += generateFirstSubnetResult(detailedSolution[0].fullIpv6AddressHexadecimal)
-          }
-        });
-
-        generateResultsTableForSubnet(detailedSolution.map((elem, _) => elem.fullIpv6AddressHexadecimal));
       } else {
         formFieldAmountSubnets.classList.add('is-invalid');
         formFieldAmountSubnets.classList.remove('is-valid');  
@@ -153,6 +81,25 @@ document.addEventListener('DOMContentLoaded', () => {
       formFieldIpAddress.classList.add('is-invalid');
       formFieldIpAddress.classList.remove('is-valid');
     }
+
+  }
+
+  const generateDetailedResults = detailedResults => {
+    detailedResults.forEach((elem, index) => {
+      if (index != 0) {
+        wrapperDetailedSolution.innerHTML += generateDetailedResultForSubnet(
+          ++index,
+          elem.relevantBitsPreviousSubnetBinary,
+          elem.relevantBitsPreviousSubnetHexadecimal,
+          elem.relevantBitsCurrentSubnetBinary,
+          elem.relevantBitsCurrentSubnetHexadecimal,
+          elem.fullIpv6AddressBinary,
+          elem.fullIpv6AddressHexadecimal
+        );
+      } else {
+        wrapperDetailedSolution.innerHTML += generateFirstSubnetResult(detailedResults[0].fullIpv6AddressHexadecimal)
+      }
+    });
   }
 
   /**
@@ -187,9 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let addressColumn = document.createElement('td');
       let optimizedAddressColumn = document.createElement('td');
 
+      let ipAddressOptimizer = IpAddressOptimizer.getInstance(ipAddress.substring(0, ipAddress.length - 3));
+      let subnet = ipAddress.substring(ipAddress.length - 2, ipAddress.length);
+
       idColumn.innerHTML = index + 1;
       addressColumn.innerHTML = ipAddress;
-      optimizedAddressColumn.innerHTML = ipAddress;
+      optimizedAddressColumn.innerHTML = `${ipAddressOptimizer.optimizedAddress()}/${subnet}`;
 
       tableRow.append(idColumn);
       tableRow.append(addressColumn);

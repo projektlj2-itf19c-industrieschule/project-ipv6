@@ -24,3 +24,13 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.btn-primary {
+  background: #003a6a !important;
+  border-color: #002544 !important;
+}
+
+.btn-primary:hover {
+  background: #e22500 !important;
+  border-color: #bd1f00 !important;
+}
