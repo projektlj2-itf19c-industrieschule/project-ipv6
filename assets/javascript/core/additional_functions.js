@@ -4,7 +4,7 @@
  * @returns {String} The HTML Markup
  */
 const getHint = html => {
-  return `<span class="badge rounded-pill bg-success mx-2">${html}</span>`;
+  return `<span class="badge rounded-pill bg-marked mx-2">${html}</span>`;
 }
 
 /**

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>IPv6 - Übersicht</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="assets/stylesheets/bs-callout.css">
+    <link rel="stylesheet" href="assets/stylesheets/style.css">
+
+    <script src="https://kit.fontawesome.com/506e7f1d56.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  </head>
+
+  <body class="container-fluid p-0">
+    <nav class="navbar navbar-expand-lg navbar-light border-bottom bg-white">
+      <div class="container-fluid">
+        <img src="./assets/images/logo.jpg" class="logo me-3">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content"
+          aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Navigation anzeigen/ausblenden">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-supported-content">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item d-flex align-items-center mx-3 dropdown">
+              <a class="hover-elements nav-link active" aria-current="page" href="./index.html"><i
+                  class="fab fa-leanpub"></i> IPv6 detailiert</a>
+            </li>
+            <li class="nav-item d-flex align-items-center mx-3">
+              <a class="hover-elements nav-link" aria-current="page" href="./pages/generate_ipv6_address.html"><i
+                  class="fas fa-cogs"></i> IPv6 generieren</a>
+            </li>
+            <li class="nav-item d-flex align-items-center mx-3">
+              <a class="hover-elements nav-link" aria-current="page" href="./pages/simplify_ipv6_address.html"><i
+                  class="fas fa-chalkboard"></i> IPv6 Adressoptimierung</a>
+            </li>
+            <li class="nav-item d-flex align-items-center mx-3">
+              <a class="hover-elements nav-link" aria-current="page" href="./pages/subnetting.html"><i
+                  class="fas fa-network-wired me-2 me-lg-0"></i> IPv6 Subnetze erkl&#228;rt</a>
+            </li>
+            <li class="nav-item d-flex align-items-center mx-3">
+              <a class="hover-elements nav-link" aria-current="page" href="./pages/generate_ipv6_subnets.html"><i
+                  class="fas fa-calculator"></i> IPv6 Subnetzrechner</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <main>
+        <div class="card mt-3">
+          <div class="card-header hover-elements">
+            <h2>Was ist IPv6</h2>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <p>IPv6 oder <b>IPng (Internet Protocol Next Generation)</b> genannt ist die Weiterentwicklung
+                  des aktuell Verbreiteten IPv4 Internet Protokolls.<br>
+                  Es ist in einem paketorientierten Netzwerk wie dem Internet für die Übertragung und Vermittlung von
+                  Datenpaketen zuständig.<br>
+                  IPv6 arbeitet auf <b class="text-danger">Layer 3 des OSI-Modells</b> und ist somit für die <b
+                    class="text-danger">Paketvermittlung</b> zuständig.<br><br>
+
+                  Ziel ist es, das bislang weit verbreitete IPv4 (Internet Protocol version 4) abzulösen und dessen
+                  Eigenschaften weiterzuentwickeln.<br>
+                  Im Wesentlichen erweitert das Protokoll den adressierbaren Bereich und löst damit das Problem der
+                  Adressknappheit.</p>
+                <div class="card-header">
+                  <h5>Merkmale</h5>
+                </div>
+                <div class="card-body">
+                  <ul class="card-list">
+                    <li>hat eine Länge von <b>128 bit (16 Byte)</b></li>
+                    <li>hexadezimal kodiert</li>
+                    <li>340 Sextillionen nutzbare IP-Adressen möglich</li>
+                    <li>Daten werden standardmäßig verschlüsselt per IPsec</li>
+                    <li>
+                      führende nullen können weggelassen werden<br>
+                      <div class="card bg-light">
+                        <img class="img-fluid rounded mx-auto d-block"
+                          src="./assets/images/overview_page/ipv6_writable.svg"
+                          alt="Possibilities to note the IPv6-Address">
+                      </div>
+                    </li>
+                    <li>
+                      <b>:: (Doppelpunkt)</b>, um alle Restnullen aufzufüllen<br>
+                      <span class="badge rounded-pill bg-danger">Wichtig!</span> Dieser darf <b>nur einmal</b> je
+                      IPv6-Adresse verwendet werden
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-6">
+                <img src="./assets/images/overview_page/osi_ipv6.svg" alt="OSI Modell"
+                  class="img-fluid rounded mx-auto d-block">
+                <div class="card-footer">Abbildung zeigt das OSI-Modell</div>
+              </div>
+            </div>
+            <table class="table table-striped">
+              <thead>
+                <tr class="custom-bg-orange-light">
+                  <th scope="col">Vordefinierte Adressen</th>
+                  <th scope="col">Adresse</th>
+                  <th scope="col">Adressbereich</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Loopback Adresse</th>
+                  <td>::1/128<br><span class="text-muted">(0000:0000:0000:0000:0000:0000:0000:0001)</span></td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <th scope="row">Verbindungslokale Adresse<br><span class="text-muted">(Link Local Address)</span></th>
+                  <td>FE80::/10</td>
+                  <td>FE80 - FEFB</td>
+                </tr>
+                <tr>
+                  <th scope="row">Multicast Adresse</th>
+                  <td>FF00::/8</td>
+                  <td>FF00 - FFFF</td>
+                </tr>
+                <tr>
+                  <th scope="row">Globale eindeutige Adresse<br><span class="text-muted">(Global Unique Address)</span>
+                  </th>
+                  <td>2001::/3</td>
+                  <td>2000 - 3FFF</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mt-5">
+          <div class="card-header hover-elements">
+            <h2>Aufbau</h2>
+          </div>
+          <div class="card-body">
+            <div class="callout callout-warning">
+              Grundlegend besteht eine IPv6 Adresse aus 128 Bit. Im folgenden Beispiel besitzt die Adresse eine
+              Pr&#228;fixl&#228;nge von 48 Bit, die Subnetz ID (16 Bit).
+            </div>
+            <img src="./assets/images/ipv6.svg" class="col-12 img-fluid" alt="IPv6 Unterteiltung">
+            <div class="row">
+              <div class="col-12 col-lg-4 mt-5">
+                <div class="card custom-bg-primary-light h-100">
+                  <div class="card-body">
+                    <h5 class="fw-bold">Routing Präfix</h5>
+                    <hr>
+                    <p>Der Routing Präfix beschreibt den Wirkungsbereich der IP-Adresse und deren Funktion.<br>
+                      Diese wird vom Internet Service Provider vorgegeben und an den Endkunden weitergeleitet</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-4 mt-5">
+                <div class="card custom-bg-purple-light h-100 ">
+                  <div class="card-body">
+                    <h5 class="fw-bold">Subnetz ID</h5>
+                    <hr>
+                    <p>Eine 16-Bit-Teilnetz-ID oder Subnetz ID.<br>
+                      Die Subnetz-ID beschreibt wie die private Netzwerktopologie aufgebaut ist bzw. wie das Netzwerk in
+                      Subnetze aufgeteilt wurde.<br>
+                      Sie stellt damit das Subnetz dar.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-4 mt-5">
+                <div class="card custom-bg-success-light h-100">
+                  <div class="card-body">
+                    <h5 class="fw-bold">Interface ID/ Schnittstellen ID</h5>
+                    <hr>
+                    <p>64 Bit f&#252;r die Interface ID/ Schnittstellen ID, die auch als Token bezeichnet wird.<br>
+                      Die Schnittstellen-ID wird entweder automatisch von der MAC-Adresse der Schnittstelle oder manuell
+                      im <b>EUI-64-Format</b> konfiguriert.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-5">
+          <div class="card-header hover-elements">
+            <h2 class="">Vorteile von IPv6</h2>
+          </div>
+          <div class="card-body">
+            <div class="card-header">
+              <h5>Mehr nutzbare Adressen</h5>
+            </div>
+            <ul class="card-list">
+              <li>
+                Das ältere Internetprotokoll IPv4 hat die Möglichkeit rund 4,3 Milliarden verschiedene Adressen zu
+                vergeben, IPv6 hingegen rund 340 Sextillionen.<br>
+                Mit IPv6 besteht die M&#246;glichkeit jedem Gerät eine eigene statische Adresse zuzuweisen, die man von
+                &#252;berall aus ansprechen k&#246;nnte.
+              </li>
+              <li>
+                Eine IPv6-Adresse ist 96 bit l&#228;nger als eine IPv4-Adresse und wird im Hexadezimal-Format
+                formatiert:<br>
+                <div class="callout callout-success">
+                  [42540594644626261931978030292209287468]<sub>10</sub><span class="text-muted"> Dezimal</span><br>
+                  <span class="custom-bg-success-light">[2001:0540:0000:0000:0231:24FF:FE80:C12C]<sub>16</sub></span><span
+                    class="text-muted"> Hexadezimal</span><br>
+                  [0010000000000001:0000010101000000:0000000000000000:0000000000000000:0000001000110001:0010010011111111:1111111010000000:1100000100101100]<sub>2</sub><span
+                    class="text-muted"> Bin&#228;r</span><br>
+                </div>
+              </li>
+            </ul>
+            <div class="card-header hover-elements">
+              <h5>weitere Vorteile</h6>
+            </div>
+            <ul class="card-list">
+              <li>Punkt-zu-Punkt-Verschlüsselung mit IPsec</li>
+              <li>M&#246;glichkeit Ger&#228;te direkt aus dem Internet anzusprechen</li>
+              <li>Datenpakete bis 4 GByte (4.294.967.335 Byte) im Vergleich der Vorganger IPv4 kann nur Datenpakete bis zu
+                65,535 Kilobyte (65.535 Byte) übertragen</li>
+              <li>Multicast - Adressen, um <b>eine Gruppe anzusprechen</b></li>
+              <li>Autokonfiguration der IPv6-Adressen möglich</li>
+              <li>die Headeroptionen der IPv6-Adressierung können die gleiche größe wie das Datenpaket selbst haben. Im
+                Vergleich bei IPv4 sind die Headeroptionen maximal 40 byte groß</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <div class="col-12 col-lg-4 mt-5 mb-2">
+          <div class="card">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-dark text-white" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Quellen
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Quellen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <a
+                      href="https://www.ip-insider.de/was-ist-ipv6-a-642703/">https://www.ip-insider.de/was-ist-ipv6-a-642703/</a><br><br>
+                    <a href="https://de.wikipedia.org/wiki/IPv6/">https://de.wikipedia.org/wiki/IPv6/</a><br><br>
+                    <a
+                      href="https://silo.tips/download/ipv6-der-stand-der-dinge">https://silo.tips/download/ipv6-der-stand-der-dinge</a><br><br>
+                    <a
+                      href="https://docs.oracle.com/cd/E19957-01/820-2980/ipv6-overview-10/index.html">https://docs.oracle.com/cd/E19957-01/820-2980/ipv6-overview-10/index.html</a><br><br>
+                    <a
+                      href="https://www.elektronik-kompendium.de/sites/net/0812201.htm">https://www.elektronik-kompendium.de/sites/net/0812201.htm</a><br><br>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

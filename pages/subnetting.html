@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>IPv6 - Toolbox</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="../assets/stylesheets/bs-callout.css" rel="stylesheet">
+  <link href="../assets/stylesheets/style.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/506e7f1d56.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="container-fluid p-0">
+  <nav class="navbar navbar-expand-lg navbar-light border-bottom bg-white">
+    <div class="container-fluid">
+      <img src="../assets/images/logo.jpg" class="logo me-3">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content"
+        aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Navigation anzeigen/ausblenden">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar-supported-content">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item d-flex align-items-center mx-3 dropdown">
+            <a class="hover-elements nav-link" aria-current="page" href="../index.html"><i
+                class="fab fa-leanpub"></i> IPv6 detailiert</a>
+          </li>
+          <li class="nav-item d-flex align-items-center mx-3">
+            <a class="hover-elements nav-link" aria-current="page" href="./generate_ipv6_address.html"><i
+                class="fas fa-cogs"></i> IPv6 generieren</a>
+          </li>
+          <li class="nav-item d-flex align-items-center mx-3">
+            <a class="hover-elements nav-link" aria-current="page" href="./simplify_ipv6_address.html"><i
+                class="fas fa-chalkboard"></i> IPv6 Adressoptimierung</a>
+          </li>
+          <li class="nav-item d-flex align-items-center mx-3">
+            <a class="hover-elements nav-link active" aria-current="page" href="./subnetting.html"><i
+                class="fas fa-network-wired me-2 me-lg-0"></i> IPv6 Subnetze erklärt</a>
+          </li>
+          <li class="nav-item d-flex align-items-center mx-3">
+            <a class="hover-elements nav-link" aria-current="page" href="./generate_ipv6_subnets.html"><i
+                class="fas fa-calculator"></i> IPv6 Subnetzrechner</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="card col-12 mt-3">
+      <div class="card-header hover-elements">
+        <h2>Standardinformationen</h2>
+      </div>
+      <div class="card-body text-break">
+        <ul>
+          <li>
+            Im Gegensatz zu IPv4 mit nur 32 bit (4 Byte), hat man unter <b class="text-primary">IPv6 128 bit (16
+              Byte)</b> zur Verfügung
+          </li>
+          <li>
+            Es stehen <b class="text-primary">16 bit zum subnetting</b> zur Verfügung
+          </li>
+          <li>
+            Die gängigen IPv6-Pr&#228;fixe sind /48 (volle 16 bit) und /56 (8 Restbit)<br>
+            Privathaushalte erhalten meist ein /56-Netz, mit dem dennoch
+          </li>
+          <li>
+            Bevor man mit dem subnetting beginnt, <u>muss man
+              sich über die Menge der gew&#252;nschten Subnetze im klaren sein</u>
+          </li>
+          <li id="subnetting-calc">
+            Man entscheidet sich für eine <code>Menge = m</code></b> an Subnetzen,
+            folgend rechnet man <b class="text-primary"><code>2^m</code></b><br><br>
+
+            Beispielsweise: <b>2001:db8:cad::/48</b><br>
+            4 Subnetze gewünscht<br>
+            2^2 = 4 bit<br><br>
+
+            Das heißt <b>2 bit</b> werden benötgt.<br>
+            Diese <b>2 bit</b> nutzen wir von den zur Verfügung stehenden 16 bit.<br>
+          </li>
+          <li>
+            <span class="badge rounded-pill bg-danger">Wichtig!</span>
+            Subnetz-bit werden von <b>links</b> nach <b>rechts</b> abgez&#228;hlt<br>
+            Innerhalb eines Bit-Blockes, wird von <b>rechts</b> nach <b>links</b> gezählt
+          </li>
+          <li>
+            <span class="badge rounded-pill bg-warning">Info!</span>
+            Unter IPv6 können <b>führende Nullen</b> weggekürzt werden<br>
+            2001:db8:cad::/48 -> 2001:0db8:0cad::/48
+          </li>
+          <li>
+            <span class="badge rounded-pill bg-warning">Info!</span>
+            <b>Nibble</b> = Halbbyte = 4 Bit
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <i class="text-muted">
+          *damit in HEX 1, 2, 3, ..., A (10), B (11), C (12), ...<br>
+          Ein HEX-Wert für jedes Subnetz von 0-9 und A-F
+        </i>
+      </div>
+    </div>
+    <div class="card col-12 mt-5">
+      <div class="card-header hover-elements">
+        <h2>Warum eigentlich Subnetze bilden?</h2>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            effizientes routing, andernfalls sind riesige Routingtabellen und ineffiziente Routingverfahren sind die
+            Folge
+          </li>
+          <li class="list-group-item">
+            logisches unterteilen von großen Netzen zur allgemeinen Übersicht
+          </li>
+          <li class="list-group-item">
+            unterteilen von Netzen in einzelne Teilbereiche
+          </li>
+          <li class="list-group-item">
+            verkleinern der Broadcast-Domäne
+          </li>
+          <li class="list-group-item">
+            Kollisionsdomäne verkleinern (ist die Menge der Teilnehmer, die um den zugriff auf ein Übertragungsmedium
+            konkurieren)
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer text-muted">
+        Kollisionsdomäne = Ist die Menge der Teilnehmer, die um den zugriff auf ein Übertragungsmedium konkurieren.
+      </div>
+    </div>
+    <div class="card col-12 mt-5">
+      <div class="card-header hover-elements">
+        <h2>Grundaufbau</h2>
+      </div>
+      <div class="card-body">
+        <img class="img-fluid rounded mx-auto d-block" src="../assets/images/ipv6.svg" alt="IPv6 Adresse erklaert">
+        <ul class="lst-group mt-5">
+          <li class="list-group-item"><b>Subnet ID</b> - identifizieren des Subnetzes <i class="text-muted">*wichtig
+              f&#252;rs folgende subnetting</i></li>
+          <li class="list-group-item"><b>Interface ID</b> - identifizieren der IPv6 Schnittstelle (des Hosts)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card col-lg-12 mt-5 mb-5">
+      <div class="card-header hover-elements">
+        <h2>Ein einfaches Beispiel</h2>
+      </div>
+      <div class="card-body">
+        <div class="card-header text-break">
+          Als erstes setzen wir die <b>Subnetz ID</b> auf <b>0</b>.<br>
+          Das ist zugleich der Standardzustand, da ohne weitere Konfiguration die <b>16 bit</b>
+          auf 0 stehen.<br>
+          <i class="text-decoration-none text-muted">*Damit hat man noch die vollen 16 bit zur Verfügung</i>
+        </div>
+        <img class="img-fluid rounded mx-auto d-block" src="../assets/images/ipv6_subnetting_0.svg" alt="IPv6 Subnetz 0">
+      </div>
+      <div class="card-body">
+        <div class="card-header text-break">
+          Ich entscheide mich für <b>4 Subnetze</b>. Der n&#228;chste Exponent zur Basis zwei, in dem unsere
+          gew&#252;nschte
+          Subnetzmenge passt ist vier.
+          <br> Das heißt, wir ben&#246;tigen <b clas "text-primary">2 bit</b>.<br>
+          Die 2 bit werden auf /48 aufgerechnet = /50
+        </div>
+        <img class="img-fluid rounded mx-auto d-block mt-2" src="../assets/images/ipv6_subnetting_4.svg" alt="IPv6 Subnetz 4">
+        <div class="callout callout-warning">
+          - 64 bit ausgeschrieben: <b>2001:0db8:0cad:<span class="text-primary">00</span>00::/48</b>
+          <br>
+          - <span class="badge bg-danger">Wichtig!</span> die <b class="text-primary">zwei bit</b> nach den ersten 48
+          bit der IPv6-Adresse<br>
+          <span class="text-muted">- wir erinnern uns 2^2 bit = 4 Subnetze</span><br>
+          - im dar&#252;ber dargestelten ersten Oktett z&#228;hlen wir, <b>von links nach rechts</b>, die zwei bit ab,
+          denn nur in denen können wir uns "bewegen"<br>
+          - danach wird einfach <b>in bin&#228;r</b> hochgezählt<br>
+          - daraus ergibt sich als volles <b>Nibble</b> [<span class="custom-bg-lightblue">0100</span>]<sub>2</sub><br>
+          - [0000]<sub>16</sub> ist in bin&#228;r [0000 0000]<sub>2</sub><br>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-header text-break">
+          Das fortgesetzt erhalten wir ein weiteres Subnetz /50.
+        </div>
+        <img class="img-fluid rounded mx-auto d-block mt-2" src="../assets/images/ipv6_subnetting_8.svg" alt="IPv6 Subnetz 8">
+        <div class="callout callout-warning">
+          - im dar&#252;ber dargestelten ersten Oktett z&#228;hlen wir wieder <b>von links nach rechts</b> die zwei bit
+          ab, denn nur in denen können wir uns "bewegen"<br>
+          - danach wird wieder einfach <b>in bin&#228;r</b> hochgezählt<br>
+          - daraus ergibt sich als volles <b>Nibble</b> [<span class="custom-bg-lightblue">1000</span>]<sub>2</sub><br>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-header text-break">
+          Und das letzte der 4 Subnetze.
+        </div>
+        <img class="img-fluid rounded mx-auto d-block mt-2" src="../assets/images/ipv6_subnetting_c.svg"
+          alt="IPv6 Subnetz C (12)">
+        <div class="callout callout-warning">
+          - im dar&#252;ber dargestelten ersten Oktett z&#228;hlen wir wieder <b>von links nach rechts</b> die zwei bit
+          ab, denn nur in denen können wir uns "bewegen"<br>
+          - danach wird wieder einfach <b>in bin&#228;r</b> hochgezählt<br>
+          - daraus ergibt sich als volles <b>Nibble</b> [<span class="custom-bg-lightblue">1100</span>]<sub>2</sub><br>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row d-flex justify-content-center">
+          <div class="card-header mb-3">Die generierten Subnetze sind damit:</div>
+          <div class="card col-2 bg-light">
+            <div class="card-body">2001:db8:cad:0 /50</div>
+          </div>
+          <div class="card col-2 offset-1 bg-light">
+            <div class="card-body">2001:db8:cad:4 /50</div>
+          </div>
+          <div class="card col-2 offset-1 bg-light">
+            <div class="card-body">2001:db8:cad:8 /50</div>
+          </div>
+          <div class="card col-2 offset-1 bg-light">
+            <div class="card-body">2001:db8:cad:c /50</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="text-muted">
+          [ C ]<sub>16</sub> = [ 1010 ]<sub>2</sub> = [ 12 ]<sub>10</sub>
+        </div>
+      </div>
+    </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-dark text-white mb-2 col-12 col-lg-4" data-bs-toggle="modal"
+      data-bs-target="#exampleModal">
+      Quellen
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Quellen</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-decoration-none">
+            <a
+              href="https://www.youtube.com/watch?v=KSiZ751-Zs8">https://www.youtube.com/watch?v=KSiZ751-Zs8</a><br><br>
+            <a
+              href="https://www.youtube.com/watch?v=UIGVPvxnCtk">https://www.youtube.com/watch?v=UIGVPvxnCtk</a><br><br>
+            <a href="http://itfreetraining.com/ipv6/subnetting/">http://itfreetraining.com/ipv6/subnetting/</a><br><br>
+            <a
+              href="https://www.subnetonline.com/pages/subnet-calculators/ipv6-subnet-calculator.php">https://www.subnetonline.com/pages/subnet-calculators/ipv6-subnet-calculator.php</a><br><br>
+            <a
+              href="https://www.fachinformatiker.de/topic/160491-ipv6-subnetting/">https://www.fachinformatiker.de/topic/160491-ipv6-subnetting/</a><br><br>
+            <a
+              href="https://www.ipv6-portal.de/tools/subnet-tabelle/">https://www.ipv6-portal.de/tools/subnet-tabelle/</a><br><br>
+            <a
+              href="https://www.ipv6-portal.de/informationen/technik/interface-identifier/">https://www.ipv6-portal.de/informationen/technik/interface-identifier/</a><br><br>
+            <a
+              href="https://administrator.de/knowledge/subnetting-ipv6-beispiels-133820.html">https://administrator.de/knowledge/subnetting-ipv6-beispiels-133820.html</a><br><br>
+            <a href="https://bin-dez-hex-umrechner.de/">https://bin-dez-hex-umrechner.de/</a><br><br>
+            <a
+              href="https://onlinebinarytools.com/convert-ipv6-to-binary">https://onlinebinarytools.com/convert-ipv6-to-binary</a><br><br>
+            <a href="https://app.diagrams.net/?src=about">https://app.diagrams.net/?src=about</a><br><br>
+            <a href="https://getbootstrap.com">https://getbootstrap.com</a><br><br>
+            <a href="https://unicode-table.com/">https://unicode-table.com/</a><br><br>
+            <a
+              href="https://www.rapidtables.com/convert/number/binary-to-hex.html">https://www.rapidtables.com/convert/number/binary-to-hex.html</a><br><br>
+            <a
+              href="https://www.silvesterlangen.de/?Netzwerke___Subnetting_IPv6">https://www.silvesterlangen.de/?Netzwerke___Subnetting_IPv6</a><br><br>
+            <a
+              href="https://www.tutorialspoint.com/de/ipv6/ipv6_subnetting.htm">https://www.tutorialspoint.com/de/ipv6/ipv6_subnetting.htm</a><br><br>
+            <a
+              href="https://de.wikipedia.org/wiki/Kollisionsdom%C3%A4ne">https://de.wikipedia.org/wiki/Kollisionsdom%C3%A4ne</a><br><br>
+            <a
+              href="https://www.ip-insider.de/was-ist-ein-subnetz-a-620402/">https://www.ip-insider.de/was-ist-ein-subnetz-a-620402/</a><br><br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

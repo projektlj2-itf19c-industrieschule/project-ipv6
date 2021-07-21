@@ -18,25 +18,34 @@
   </head>
   <body>
     <div id="wrapper" class="container-fluid p-0">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <nav class="navbar navbar-expand-lg navbar-light border-bottom bg-white">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">IPv6-Tool</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Navigation anzeigen/ausblenden">
+          <img src="../assets/images/logo.jpg" class="logo me-3">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content"
+            aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Navigation anzeigen/ausblenden">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbar-supported-content">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item d-flex align-items-center mx-3">
-                <i class="fas fa-plus-circle me-2 me-lg-0"></i>
-                <a class="nav-link active" aria-current="page" href="./generate_ipv6_address.html">IPv6 Adressgenerierung</a>
+              <li class="nav-item d-flex align-items-center mx-3 dropdown">
+                <a class="hover-elements nav-link" aria-current="page" href="../index.html"><i
+                    class="fab fa-leanpub"></i> IPv6 detailiert</a>
               </li>
               <li class="nav-item d-flex align-items-center mx-3">
-                <i class="fas fa-network-wired me-2 me-lg-0"></i>
-                <a class="nav-link" aria-current="page" href="./generate_ipv6_subnets.html">IPv6 Subnetzgenerierung</a>
+                <a class="hover-elements nav-link active" aria-current="page" href="./generate_ipv6_address.html"><i
+                    class="fas fa-cogs"></i> IPv6 generieren</a>
               </li>
               <li class="nav-item d-flex align-items-center mx-3">
-                <i class="fas fa-cogs me-2 me-lg-0"></i>
-                <a class="nav-link" aria-current="page" href="./simplify_ipv6_address.html">IPv6 Adressoptimierung</a>
+                <a class="hover-elements nav-link" aria-current="page" href="./simplify_ipv6_address.html"><i
+                    class="fas fa-chalkboard"></i> IPv6 Adressoptimierung</a>
+              </li>
+              <li class="nav-item d-flex align-items-center mx-3">
+                <a class="hover-elements nav-link" aria-current="page" href="./subnetting.html"><i
+                    class="fas fa-network-wired me-2 me-lg-0"></i> IPv6 Subnetze erkl&#228;rt</a>
+              </li>
+              <li class="nav-item d-flex align-items-center mx-3">
+                <a class="hover-elements nav-link" aria-current="page" href="./generate_ipv6_subnets.html"><i
+                    class="fas fa-calculator"></i> IPv6 Subnetzrechner</a>
               </li>
             </ul>
           </div>
@@ -48,7 +57,7 @@
           <div class="card-body">
             <div class="mb-3">
               <label for="mac-address" class="form-label">MAC-Adresse</label>
-              <input type="text" id="mac-address" name="mac_address" value="70:07:12:34:56:78" aria-describedby="mac-address-invalid" class="form-control" />
+              <input type="text" id="mac-address" name="mac_address" placeholder="z. B.: 70:07:12:34:56:78" aria-describedby="mac-address-invalid" class="form-control" />
               <div id="mac-address-invalid" class="invalid-feedback">Die eingegebene Mac-Addresse ist nicht gültig</div>
               <div id="mac-address-valid" class="valid-feedback">Die eingegebene Mac-Addresse ist gültig</div>
             </div>
@@ -105,10 +114,6 @@
                     Der EUI-64-Identifier ist der aus der MAC-Adresse errechnete Wert
                   </div>
                 </div>
-                <form action="simplify_ipv6_address.html">
-                  <input type="hidden" name="ipv6" id="hidden-field-ipv6-address" />
-                  <button type="submit" class="btn btn-primary mt-4">Diese IPv6-Adresse vereinfachen</a>
-                </form>
               </div>
             </div>
           </div>
