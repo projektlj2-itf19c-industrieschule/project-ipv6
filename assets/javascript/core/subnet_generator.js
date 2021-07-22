@@ -74,7 +74,7 @@ class SubnetGenerator {
 
       this._detailedSolutions[i].relevantBitsCurrentSubnetBinary       = lastKnownSubnet;
       this._detailedSolutions[i].relevantBitsCurrentSubnetHexadecimal  = dualToHex(lastKnownSubnet); // Überarbeiten
-      this._detailedSolutions[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, this._startRange) + `<span class="hint-decent">${lastKnownSubnet}</span>` + copy.substring(this._endRange));
+      this._detailedSolutions[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, this._startRange) + `<span class="hint-decent monospaced">${lastKnownSubnet}</span>` + copy.substring(this._endRange));
     }
 
     for (let i = 0; i < this._amountSubnets - 1; i++) {

@@ -112,7 +112,7 @@ const generateDetailedResultForSubnet = (
             </tr>
             <tr>
               <td class="fw-bold">Zusammengesetzte IPv6-Adresse (Binär)</td>
-              <td>${fullIpv6AddressBinary}</td>
+              <td class="monospaced">${fullIpv6AddressBinary}</td>
             </tr>
             <tr>
               <td class="fw-bold">Zusammengesetzte IPv6-Adresse (Hexadezimal)</td>
