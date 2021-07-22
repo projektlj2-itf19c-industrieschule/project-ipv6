@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let ipAddressOptimized = IpAddressOptimizer.getInstance(ipAddress);
 
       stepOneSource.innerHTML = ipAddress;
-      stepOneResult.innerHTML = ipAddressOptimized.withTrailingZerosRemoved();
+      stepOneResult.innerHTML = ipAddressOptimized.ipWithTrailingZerosRemovedMarked();
 
       stepTwoSource.innerHTML = ipAddressOptimized.withTrailingZerosRemoved();
-      stepTwoResult.innerHTML = ipAddressOptimized.withBlocksCombined();
+      stepTwoResult.innerHTML = ipAddressOptimized.ipWithBlockCombinedMarked();
     } else {
       formFieldIpAddress.classList.add('is-invalid');
       formFieldIpAddress.classList.remove('is-valid');

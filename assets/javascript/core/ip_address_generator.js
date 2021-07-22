@@ -42,7 +42,7 @@ class IpAddressGenerator {
     for (let i = 3; i < 6; i++)
       macAddressWithFFFE += `${splittedMacAddress[i]}:`;
   
-    macAddressWithFFFE = macAddressWithFFFE.substring(0, macAddressWithFFFE.length - 1);
+    macAddressWithFFFE = macAddressWithFFFE.removeLast();
   
     this._withFffeInserted = macAddressWithFFFE;
     this._withFffeInsertedAsHTML = macAddressWithFFFE.replace(FEFE, getHint(FEFE));
@@ -71,7 +71,7 @@ class IpAddressGenerator {
     for (let i = 1; i < splittedMacAddress.length; i++)
       macAddressWith2ndBitInverted += `${splittedMacAddress[i]}:`;
   
-    macAddressWith2ndBitInverted = macAddressWith2ndBitInverted.substring(0, macAddressWith2ndBitInverted.length - 1);
+    macAddressWith2ndBitInverted = macAddressWith2ndBitInverted.removeLast();
   
     let firstByteHexHTML                  = firstByteHex;
     let firstByteDualHTML                 = firstByteDual.substring(0, 6) + getHint(firstByteDual.substring(6, 7)) + firstByteDual.substring(7, 8);
@@ -108,7 +108,7 @@ class IpAddressGenerator {
       count++;
     }
   
-    eui64Identifier = eui64Identifier.substring(0, eui64Identifier.length - 1);
+    eui64Identifier = eui64Identifier.removeLast();
   
     this._withSecondBitInvertedAndColonsMarkedAsHTML = this._withSecondBitInverted.replaceAll(':', getHint(':'));
     this._ipv6PrefixWithEUI64IdentifierCombined = `${ipv6Prefix}:${eui64Identifier}`;

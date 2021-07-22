@@ -7,8 +7,8 @@ class SubnetGenerator {
    * The constructor of this class
    * @param {String} ipBinary The IP in binary format to generate the subnets for
    * @param {String} ipHex  The IP in hexadecimal format to generate the subnets for
-   * @param {String} subnet  The source subnet mask of the source IP Address
-   * @param {String} amountSubnets The amount of subnets to generate
+   * @param {Number} subnet  The source subnet mask of the source IP Address
+   * @param {Number} amountSubnets The amount of subnets to generate
    */
   constructor(ipBinary, ipHex, subnet, amountSubnets) {
     this._ipBinary      = ipBinary;
@@ -70,8 +70,8 @@ class SubnetGenerator {
         relevantBitsPreviousSubnetHex += `${dualToHex(block.padEnd(4, '0'))} `;
       });
 
-      this._detailedSolutions[i].relevantBitsPreviousSubnetBinary = relevantBitsPreviousSubnetBinary.substring(0, relevantBitsPreviousSubnetBinary.length - 1);
-      this._detailedSolutions[i].relevantBitsPreviousSubnetHexadecimal = relevantBitsPreviousSubnetHex.substring(0, relevantBitsPreviousSubnetHex.length - 1);
+      this._detailedSolutions[i].relevantBitsPreviousSubnetBinary = relevantBitsPreviousSubnetBinary.removeLast();
+      this._detailedSolutions[i].relevantBitsPreviousSubnetHexadecimal = relevantBitsPreviousSubnetHex.removeLast();
 
       lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(this._necessaryBits, '0');
 
@@ -87,8 +87,8 @@ class SubnetGenerator {
         relevantBitsCurrentSubnetHex += `${dualToHex(block.padEnd(4, '0'))} `;
       });
 
-      this._detailedSolutions[i].relevantBitsCurrentSubnetBinary       = relevantBitsCurrentSubnetBinary.substring(0, relevantBitsCurrentSubnetBinary.length - 1);
-      this._detailedSolutions[i].relevantBitsCurrentSubnetHexadecimal  = relevantBitsCurrentSubnetHex.substring(0, relevantBitsCurrentSubnetHex.length - 1);
+      this._detailedSolutions[i].relevantBitsCurrentSubnetBinary       = relevantBitsCurrentSubnetBinary.removeLast();
+      this._detailedSolutions[i].relevantBitsCurrentSubnetHexadecimal  = relevantBitsCurrentSubnetHex.removeLast();
       this._detailedSolutions[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, this._startRange) + `<span class="hint-decent monospaced">${lastKnownSubnet}</span>` + copy.substring(this._endRange));
     }
 
@@ -97,7 +97,7 @@ class SubnetGenerator {
       let ipv6Address = '';
       temp.forEach((block, _) => ipv6Address += `${dualToHex(block).padStart(4, '0')}:`);
       
-      let fullIpAddress = ipv6Address.substring(0, ipv6Address.length - 1) + `/${this._newSubnet}`;
+      let fullIpAddress = ipv6Address.removeLast() + `/${this._newSubnet}`;
       this._generatedSubnetsHex.push(fullIpAddress);
       this._detailedSolutions[i].fullIpv6AddressHexadecimal = fullIpAddress;
     }

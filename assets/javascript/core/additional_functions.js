@@ -198,15 +198,21 @@ String.prototype.splitInChunksOfLength = function(chunkLength) {
   s.split('').forEach((char, index) => {
     substring += char;
 
-    if (substring.length == chunkLength) {
+    if (substring.length === chunkLength) {
       splitted.push(substring);
       substring = '';
     }
   });
 
-  if (substring.length != 0) {
+  if (substring.length !== 0) {
     splitted.push(substring);
   }
 
   return splitted;
+}
+
+String.prototype.removeLast = function (amount = 1) {
+  let s = this.valueOf();
+
+  return s.substring(0, s.length - amount);
 }

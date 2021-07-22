@@ -19,7 +19,6 @@ class IpAddressValidator {
 
   /**
    * Check if an IPv6-Address is valid
-   * @param {String} this._ipAddress The IP-Address to check for validity
    */
   _checkIpV6() {
     let lastDigitWasColon   = false;
@@ -50,7 +49,7 @@ class IpAddressValidator {
       if (!this._valid)
         return;
 
-      if (letter == ':') {
+      if (letter === ':') {
         if (lastDigitWasColon) {
           // Double-double-colons are only allowed one time (A::B::C is invalid)
           if (doubleColonAppeared) {
@@ -177,14 +176,14 @@ class PrefixValidator {
     }
     
     // Fill blocks with leading zeros if necessary
-    prefixSplitted.forEach((block, index) => prefixSplitted[index] = (this._mode == PrefixValidator.MODE.SUBNET_48 ? block.padStart(4, '0') : block.padEnd(4, '0')));
+    prefixSplitted.forEach((block, index) => prefixSplitted[index] = (this._mode === PrefixValidator.MODE.SUBNET_48 ? block.padStart(4, '0') : block.padEnd(4, '0')));
 
     let ipBinary = '';
     prefixSplitted.forEach((block, _) => ipBinary += hexToBinary(block, 16));
     prefixSplitted.forEach((block, _) => ipHex += `${block}:`);
 
     this._ipBinary = ipBinary;
-    this._ipHex = ipHex.substring(0, ipHex.length - 1);
+    this._ipHex = ipHex.removeLast();
   }
 
   /**
