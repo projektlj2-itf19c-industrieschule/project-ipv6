@@ -32,13 +32,13 @@ class IpAddressValidator {
     // An IPv6 Address has to be at least 2 characters long
     if (ipAddress.length < 2) {
       this._valid = false;
-      this._reasonForInvalidity = 'IPv6 Addresse ist zu kurz';
+      this._reasonForInvalidity = 'IPv6 Präfix ist zu kurz';
     }
 
     // An IPv6 Address has to be at most 39 characters long
     if (ipAddress.length > 39) {
       this._valid = false;
-      this._reasonForInvalidity = 'IPv6 Addresse ist zu lang';
+      this._reasonForInvalidity = 'IPv6 Präfix ist zu lang';
     }
   
     console.log(this._valid);
@@ -71,11 +71,11 @@ class IpAddressValidator {
           // Blocks can't be greater than 16 Bits (4 hexadecimal characters)
           if (hexSymbolCount > 4) {
             this._valid = false;
-            this._reasonForInvalidity = 'IPv6 Addresse enthält eine Hexadezimalzahl, die größer als 16 Bit ist'
+            this._reasonForInvalidity = 'IPv6 Präfix enthält eine Hexadezimalzahl, die größer als 16 Bit ist'
           } 
         } else {
           this._valid = false;
-          this._reasonForInvalidity = 'IPv6 Addresse enthält ungültige Zeichen'; 
+          this._reasonForInvalidity = 'IPv6 Präfix enthält ungültige Zeichen'; 
         }
       }
       lastDigitWasColon = letter === ':';
@@ -84,13 +84,13 @@ class IpAddressValidator {
     // A valid IPv6 Adress has at least two colons
     if (this._valid && colonCount < 2) {
       this._valid = false;
-      this._reasonForInvalidity = 'IPv6 Addresse enthält zu wenige Doppelpunkte';
+      this._reasonForInvalidity = 'IPv6 Präfix enthält zu wenige Doppelpunkte';
     }
 
     // A valid IPv6 Adress has at most seven colons
     if (this._valid && colonCount > 7) {
       this._valid = false;
-      this._reasonForInvalidity = 'IPv6 Addresse enthält zu viele Doppelpunkte';
+      this._reasonForInvalidity = 'IPv6 Präfix enthält zu viele Doppelpunkte';
     }
   }
 

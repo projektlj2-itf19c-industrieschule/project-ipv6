@@ -62,8 +62,16 @@ class SubnetGenerator {
     let lastKnownSubnet = copy.substring(this._startRange, this._endRange);
 
     for (let i = 0; i < this._amountSubnets - 1; i++) {
-      this._detailedSolutions[i].relevantBitsPreviousSubnetBinary = lastKnownSubnet;
-      this._detailedSolutions[i].relevantBitsPreviousSubnetHexadecimal = dualToHex(lastKnownSubnet);
+
+      let relevantBitsPreviousSubnetBinary = '';
+      let relevantBitsPreviousSubnetHex = '';
+      lastKnownSubnet.splitInChunksOfLength(4).forEach(block => {
+        relevantBitsPreviousSubnetBinary += `${block} `;
+        relevantBitsPreviousSubnetHex += `${dualToHex(block.padEnd(4, '0'))} `;
+      });
+
+      this._detailedSolutions[i].relevantBitsPreviousSubnetBinary = relevantBitsPreviousSubnetBinary.substring(0, relevantBitsPreviousSubnetBinary.length - 1);
+      this._detailedSolutions[i].relevantBitsPreviousSubnetHexadecimal = relevantBitsPreviousSubnetHex.substring(0, relevantBitsPreviousSubnetHex.length - 1);
 
       lastKnownSubnet = decimalToDual(dualToDecimal(lastKnownSubnet) + 1).padStart(this._necessaryBits, '0');
 
@@ -72,8 +80,15 @@ class SubnetGenerator {
       let generatedSubnet = copy.substring(0, this._startRange) + lastKnownSubnet + copy.substring(this._endRange);
       this._generatedSubnetsBinary.push(generatedSubnet);
 
-      this._detailedSolutions[i].relevantBitsCurrentSubnetBinary       = lastKnownSubnet;
-      this._detailedSolutions[i].relevantBitsCurrentSubnetHexadecimal  = dualToHex(lastKnownSubnet); // Überarbeiten
+      let relevantBitsCurrentSubnetBinary = '';
+      let relevantBitsCurrentSubnetHex = '';
+      lastKnownSubnet.splitInChunksOfLength(4).forEach(block => {
+        relevantBitsCurrentSubnetBinary += `${block} `;
+        relevantBitsCurrentSubnetHex += `${dualToHex(block.padEnd(4, '0'))} `;
+      });
+
+      this._detailedSolutions[i].relevantBitsCurrentSubnetBinary       = relevantBitsCurrentSubnetBinary.substring(0, relevantBitsCurrentSubnetBinary.length - 1);
+      this._detailedSolutions[i].relevantBitsCurrentSubnetHexadecimal  = relevantBitsCurrentSubnetHex.substring(0, relevantBitsCurrentSubnetHex.length - 1);
       this._detailedSolutions[i].fullIpv6AddressBinary                 = formatBinaryIpAddress(copy.substring(0, this._startRange) + `<span class="hint-decent monospaced">${lastKnownSubnet}</span>` + copy.substring(this._endRange));
     }
 

@@ -189,3 +189,24 @@ const formatBinaryIpAddress = ipAddress => {
 
   return formatted;
 }
+
+String.prototype.splitInChunksOfLength = function(chunkLength) {
+  let s = this.valueOf();
+  let splitted = [];
+
+  let substring = '';
+  s.split('').forEach((char, index) => {
+    substring += char;
+
+    if (substring.length == chunkLength) {
+      splitted.push(substring);
+      substring = '';
+    }
+  });
+
+  if (substring.length != 0) {
+    splitted.push(substring);
+  }
+
+  return splitted;
+}
