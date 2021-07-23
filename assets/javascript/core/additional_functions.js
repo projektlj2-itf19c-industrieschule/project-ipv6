@@ -94,9 +94,9 @@ const generateDetailedResultForSubnet = (
               <td class="fw-bold">Relevante Bits des vorherigen Subnetzes:</td>
               <td>
                 <div class="d-flex align-items-center justify-content-between">
-                  <span>[${relevantBitsPreviousSubnetBinary}]<sub>2</sub></span>
+                  <span class="monospaced">[${relevantBitsPreviousSubnetBinary}]<sub>2</sub></span>
                   <i class="fas fa-arrow-right"></i>
-                  <span>[${relevantBitsPreviousSubnetHexadecimal}]<sub>16</sub></span>
+                  <span class="monospaced">[${relevantBitsPreviousSubnetHexadecimal}]<sub>16</sub></span>
                 </div>
               </td>
             </tr>
@@ -104,9 +104,9 @@ const generateDetailedResultForSubnet = (
               <td class="fw-bold">Relevante Bits des aktuellen Subnetzes (hochgezählt):</td>
               <td>
                 <div class="d-flex align-items-center justify-content-between">
-                  <span>[${relevantBitsCurrentSubnetBinary}]<sub>2</sub></span>
+                  <span class="monospaced">[${relevantBitsCurrentSubnetBinary}]<sub>2</sub></span>
                   <i class="fas fa-arrow-right"></i>
-                  <span>[${relevantBitsCurrentSubnetHexadecimal}]<sub>16</sub></span>
+                  <span class="monospaced">[${relevantBitsCurrentSubnetHexadecimal}]<sub>16</sub></span>
                 </div>
               </td>
             </tr>
